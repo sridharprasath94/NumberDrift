@@ -2,19 +2,28 @@ package com.flash.numberdrift.presentation.game
 
 import androidx.lifecycle.ViewModel
 import com.flash.numberdrift.domain.usecase.DetectGameOverUseCase
-import com.flash.numberdrift.domain.usecase.DriftTilesUseCase
-import com.flash.numberdrift.domain.usecase.MoveTilesUseCase
+import com.flash.numberdrift.domain.usecase.DriftBoardUseCase
+import com.flash.numberdrift.domain.usecase.MoveBoardUseCase
 import com.flash.numberdrift.domain.usecase.StartGameUseCase
+import com.flash.numberdrift.domain.usecase.HasBoardChangedUseCase
+import com.flash.numberdrift.domain.usecase.SpawnTilesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import androidx.lifecycle.viewModelScope
+import com.flash.numberdrift.domain.model.Direction
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
     private val detectGameOverUseCase: DetectGameOverUseCase,
-    private val driftTilesUseCase: DriftTilesUseCase,
-    private val moveTilesUseCase: MoveTilesUseCase,
+    private val driftBoardUseCase: DriftBoardUseCase,
+    private val moveBoardUseCase: MoveBoardUseCase,
+    private val spawnTilesUseCase: SpawnTilesUseCase,
+    private val hasBoardChangedUseCase: HasBoardChangedUseCase,
     private val startGameUseCase: StartGameUseCase,
 
     ) : ViewModel() {
@@ -24,4 +33,112 @@ class GameViewModel @Inject constructor(
 
     val uiState: StateFlow<GameUiState> = _uiState
 
+    private val _driftTimer = MutableStateFlow(3)
+    val driftTimer: StateFlow<Int> = _driftTimer
+
+    private val driftDelaySeconds = 3
+
+    private var driftJob: Job? = null
+
+    fun startGame() {
+        viewModelScope.launch {
+
+            _uiState.value = GameUiState.Loading
+
+            val state = startGameUseCase()
+
+            _uiState.value = GameUiState.Playing(
+                board = state.board,
+                score = state.score,
+                bestScore = state.bestScore
+            )
+            startDriftTimer()
+        }
+    }
+
+    fun moveBoard(direction: Direction) {
+
+        val currentState = _uiState.value
+
+        if (currentState !is GameUiState.Playing) return
+
+        val (movedBoard, gainedScore) = moveBoardUseCase(
+            currentState.board,
+            direction
+        )
+
+        // If nothing changed, do nothing
+        val boardChanged = hasBoardChangedUseCase(
+            currentState.board,
+            movedBoard
+        )
+
+        if (!boardChanged) return
+
+        // Spawn new tile
+        val boardAfterSpawn = spawnTilesUseCase(movedBoard)
+
+        val newScore = currentState.score + gainedScore
+
+        val isGameOver = detectGameOverUseCase(boardAfterSpawn)
+
+        if (isGameOver) {
+            _uiState.value = GameUiState.GameOver(
+                score = newScore,
+                bestScore = maxOf(currentState.bestScore, newScore)
+            )
+        } else {
+            _uiState.value = GameUiState.Playing(
+                board = boardAfterSpawn,
+                score = newScore,
+                bestScore = currentState.bestScore
+            )
+        }
+
+        resetDriftTimer()
+    }
+
+    private fun startDriftTimer() {
+
+        driftJob?.cancel()
+
+        driftJob = viewModelScope.launch {
+
+            while (true) {
+
+                for (i in driftDelaySeconds downTo 1) {
+                    _driftTimer.value = i
+                    delay(1000)
+                }
+
+                _driftTimer.value = 0
+                driftBoard()
+            }
+        }
+    }
+
+    private fun resetDriftTimer() {
+        startDriftTimer()
+    }
+
+    fun driftBoard() {
+        val currentState = _uiState.value
+
+        if (currentState !is GameUiState.Playing) return
+
+        val newBoard = driftBoardUseCase(currentState.board)
+
+        val isGameOver = detectGameOverUseCase(newBoard)
+
+        if (isGameOver) {
+            _uiState.value = GameUiState.GameOver(
+                score = currentState.score,
+                bestScore = currentState.bestScore
+            )
+        } else {
+            _uiState.value = currentState.copy(
+                board = newBoard
+            )
+        }
+    }
 }
