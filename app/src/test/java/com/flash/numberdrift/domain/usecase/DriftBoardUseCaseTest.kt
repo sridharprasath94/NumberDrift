@@ -7,13 +7,13 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class DriftTilesUseCaseTest {
+class DriftBoardUseCaseTest {
 
-    private lateinit var driftTilesUseCase: DriftTilesUseCase
+    private lateinit var driftBoardUseCase: DriftBoardUseCase
 
     @Before
     fun setup() {
-        driftTilesUseCase = DriftTilesUseCase()
+        driftBoardUseCase = DriftBoardUseCase()
     }
 
     @Test
@@ -27,7 +27,7 @@ class DriftTilesUseCaseTest {
             )
         )
 
-        val result = driftTilesUseCase(board)
+        val result = driftBoardUseCase(board)
 
         assertEquals(board.cells.size, result.cells.size)
         assertEquals(board.cells[0].size, result.cells[0].size)
@@ -44,7 +44,7 @@ class DriftTilesUseCaseTest {
             )
         )
 
-        val result = driftTilesUseCase(board)
+        val result = driftBoardUseCase(board)
 
         val originalValues = board.cells.flatten().filter { it != 0 }.sorted()
         val newValues = result.cells.flatten().filter { it != 0 }.sorted()
@@ -63,7 +63,7 @@ class DriftTilesUseCaseTest {
             )
         )
 
-        val result = driftTilesUseCase(board)
+        val result = driftBoardUseCase(board)
 
         // ensure no new tiles are created
         val originalCount = board.cells.flatten().count { it != 0 }
