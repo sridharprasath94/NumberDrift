@@ -7,8 +7,10 @@ import androidx.navigation.NavOptions
 import com.flash.numberdrift.R
 import com.flash.numberdrift.databinding.FragmentGameBinding
 import androidx.navigation.fragment.findNavController
+import dagger.hilt.android.AndroidEntryPoint
 import dev.androidbroadcast.vbpd.viewBinding
 
+@AndroidEntryPoint
 class GameFragment : Fragment(R.layout.fragment_game) {
     private val binding: FragmentGameBinding by viewBinding(FragmentGameBinding::bind)
 
