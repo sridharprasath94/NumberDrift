@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NumberDrift</string>
+    <string name="score_format">Score: %1$d</string>
+    <string name="best_score_format">Best: %1$d</string>
 </resources>
