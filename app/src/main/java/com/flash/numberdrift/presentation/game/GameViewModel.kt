@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.viewModelScope
 import com.flash.numberdrift.domain.model.Direction
+import com.flash.numberdrift.domain.usecase.SaveBestScoreUseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -25,8 +26,8 @@ class GameViewModel @Inject constructor(
     private val spawnTilesUseCase: SpawnTilesUseCase,
     private val hasBoardChangedUseCase: HasBoardChangedUseCase,
     private val startGameUseCase: StartGameUseCase,
-
-    ) : ViewModel() {
+    private val saveBestScoreUseCase: SaveBestScoreUseCase,
+) : ViewModel() {
 
     private val _uiState =
         MutableStateFlow<GameUiState>(GameUiState.Initial)
@@ -39,6 +40,12 @@ class GameViewModel @Inject constructor(
     private val driftDelaySeconds = 3
 
     private var driftJob: Job? = null
+
+    private fun saveBestScoreIfNeeded(score: Int) {
+        viewModelScope.launch {
+            saveBestScoreUseCase.invoke(score)
+        }
+    }
 
     fun startGame() {
         viewModelScope.launch {
@@ -73,7 +80,17 @@ class GameViewModel @Inject constructor(
             movedBoard
         )
 
-        if (!boardChanged) return
+        if (!boardChanged) {
+            val isGameOver = detectGameOverUseCase(currentState.board)
+            if (isGameOver) {
+                saveBestScoreIfNeeded(currentState.score)
+                _uiState.value = GameUiState.GameOver(
+                    score = currentState.score,
+                    bestScore = maxOf(currentState.bestScore, currentState.score)
+                )
+            }
+            return
+        }
 
         // Spawn new tile
         val boardAfterSpawn = spawnTilesUseCase(movedBoard)
@@ -83,6 +100,7 @@ class GameViewModel @Inject constructor(
         val isGameOver = detectGameOverUseCase(boardAfterSpawn)
 
         if (isGameOver) {
+            saveBestScoreIfNeeded(newScore)
             _uiState.value = GameUiState.GameOver(
                 score = newScore,
                 bestScore = maxOf(currentState.bestScore, newScore)
@@ -131,6 +149,7 @@ class GameViewModel @Inject constructor(
         val isGameOver = detectGameOverUseCase(newBoard)
 
         if (isGameOver) {
+            saveBestScoreIfNeeded(currentState.score)
             _uiState.value = GameUiState.GameOver(
                 score = currentState.score,
                 bestScore = currentState.bestScore

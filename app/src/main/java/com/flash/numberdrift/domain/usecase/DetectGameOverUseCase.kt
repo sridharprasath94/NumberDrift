@@ -26,15 +26,16 @@ class DetectGameOverUseCase @Inject constructor() {
                     return false
                 }
 
-                // Check right neighbor
-                if (col + 1 < size && board.cells[row][col + 1] == value) {
-                    return false
-                }
-
-                // Check bottom neighbor
-                if (row + 1 < size && board.cells[row + 1][col] == value) {
-                    return false
-                }
+                // TEMPORARY: Disable merge detection for investigation
+//                // Check right neighbor
+//                if (col + 1 < size && board.cells[row][col + 1] == value) {
+//                    return false
+//                }
+//
+//                // Check bottom neighbor
+//                if (row + 1 < size && board.cells[row + 1][col] == value) {
+//                    return false
+//                }
             }
         }
 

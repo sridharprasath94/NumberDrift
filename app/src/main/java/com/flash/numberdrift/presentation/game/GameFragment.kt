@@ -160,7 +160,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
     }
 
     private fun observeState() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
 
                 when (state) {
@@ -189,7 +189,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                 }
             }
         }
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.driftTimer.collect { seconds ->
 
                 val switcher = binding.driftTimerText
