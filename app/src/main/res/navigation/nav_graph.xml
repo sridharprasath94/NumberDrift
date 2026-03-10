@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:startDestination="@id/startFragment">
+
+    <!-- HOME / START -->
+    <fragment
+        android:id="@+id/startFragment"
+        android:name="com.flash.numberdrift.presentation.home.HomeFragment">
+
+        <action
+            android:id="@+id/action_start_to_game"
+            app:destination="@id/gameFragment" />
+
+        <action
+            android:id="@+id/action_start_to_settings"
+            app:destination="@id/settingsFragment" />
+
+    </fragment>
+
+    <!-- GAME SCREEN -->
+    <fragment
+        android:id="@+id/gameFragment"
+        android:name="com.flash.numberdrift.presentation.game.GameFragment">
+
+        <action
+            android:id="@+id/action_game_to_gameOver"
+            app:destination="@id/gameOverFragment" />
+
+        <action
+            android:id="@+id/action_game_to_home"
+            app:destination="@id/startFragment" />
+
+    </fragment>
+
+    <!-- SETTINGS -->
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.flash.numberdrift.presentation.settings.SettingsFragment">
+
+        <action
+            android:id="@+id/action_settings_to_home"
+            app:destination="@id/startFragment" />
+
+    </fragment>
+
+    <!-- GAME OVER -->
+    <fragment
+        android:id="@+id/gameOverFragment"
+        android:name="com.flash.numberdrift.presentation.gameover.GameOverFragment">
+
+        <argument
+            android:name="score"
+            app:argType="integer"
+            android:defaultValue="0"/>
+
+        <argument
+            android:name="bestScore"
+            app:argType="integer"
+            android:defaultValue="0"/>
+
+        <action
+            android:id="@+id/action_gameOver_to_home"
+            app:destination="@id/startFragment" />
+
+        <action
+            android:id="@+id/action_gameOver_to_game"
+            app:destination="@id/gameFragment" />
+
+    </fragment>
+
+</navigation>
