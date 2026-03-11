@@ -173,7 +173,10 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                             .setTitle("Exit Game")
                             .setMessage("Are you sure you want to leave the current game?")
                             .setNegativeButton("NO") { dialog, _ -> dialog.dismiss() }
-                            .setPositiveButton("YES") { _, _ -> findNavController().navigateUp() }
+                            .setPositiveButton("YES") { _, _ ->
+                                viewModel.saveBestScoreIfNeeded(state.score)
+                                findNavController().navigateUp()
+                            }
                             .show()
                     } else {
                         findNavController().navigate(GameFragmentDirections.actionGameToHome())
