@@ -78,14 +78,26 @@ class GameViewModel @Inject constructor(
     fun startGame() {
         viewModelScope.launch {
 
-            val state = startGameUseCase(gameMode)
+            val savedGame = getSavedGameUseCase(gameMode)
 
-            _uiState.value = GameUiState.Playing(
-                board = state.board,
-                score = state.score,
-                bestScore = state.bestScore,
-                gameMode = gameMode
-            )
+            if (savedGame != null) {
+                _uiState.value = GameUiState.Playing(
+                    board = savedGame.board,
+                    score = savedGame.score,
+                    bestScore = savedGame.bestScore,
+                    gameMode = savedGame.gameMode
+                )
+            } else {
+                val state = startGameUseCase(gameMode)
+
+                _uiState.value = GameUiState.Playing(
+                    board = state.board,
+                    score = state.score,
+                    bestScore = state.bestScore,
+                    gameMode = gameMode
+                )
+            }
+
             startDriftTimer()
         }
     }
@@ -113,15 +125,9 @@ class GameViewModel @Inject constructor(
         if (!boardChanged) {
             val isGameOver = detectGameOverUseCase(currentState.board)
             if (isGameOver) {
-                saveBestScoreIfNeeded(currentState.score)
-                viewModelScope.launch {
-                    soundManager.playGameOverSound()
-                }
-                stopDriftTimer()
-                _uiState.value = GameUiState.GameOver(
+                handleGameOver(
                     score = currentState.score,
-                    bestScore = maxOf(currentState.bestScore, currentState.score),
-                    gameMode = gameMode
+                    bestScore = maxOf(currentState.bestScore, currentState.score)
                 )
             }
             return
@@ -135,13 +141,9 @@ class GameViewModel @Inject constructor(
         val isGameOver = detectGameOverUseCase(boardAfterSpawn)
 
         if (isGameOver) {
-            saveBestScoreIfNeeded(newScore)
-            soundManager.playGameOverSound()
-            stopDriftTimer()
-            _uiState.value = GameUiState.GameOver(
+            handleGameOver(
                 score = newScore,
-                bestScore = maxOf(currentState.bestScore, newScore),
-                gameMode = gameMode
+                bestScore = maxOf(currentState.bestScore, newScore)
             )
         } else {
             _uiState.value = GameUiState.Playing(
@@ -192,13 +194,9 @@ class GameViewModel @Inject constructor(
         val isGameOver = detectGameOverUseCase(newBoard)
 
         if (isGameOver) {
-            saveBestScoreIfNeeded(currentState.score)
-            soundManager.playGameOverSound()
-            stopDriftTimer()
-            _uiState.value = GameUiState.GameOver(
+            handleGameOver(
                 score = currentState.score,
-                bestScore = currentState.bestScore,
-                gameMode = gameMode
+                bestScore = currentState.bestScore
             )
         } else {
             _uiState.value = currentState.copy(
@@ -207,11 +205,34 @@ class GameViewModel @Inject constructor(
         }
     }
 
+    private fun handleGameOver(score: Int, bestScore: Int) {
+
+        saveBestScoreIfNeeded(score)
+
+        viewModelScope.launch {
+            clearSavedGameUseCase(gameMode)
+            soundManager.playGameOverSound()
+        }
+
+        stopDriftTimer()
+
+        _uiState.value = GameUiState.GameOver(
+            score = score,
+            bestScore = bestScore,
+            gameMode = gameMode
+        )
+    }
+
     fun restartGame() {
         val currentState = _uiState.value
         if (currentState !is GameUiState.Playing) return
+
         saveBestScoreIfNeeded(currentState.score)
-        startGame()
+
+        viewModelScope.launch {
+            clearSavedGameUseCase(gameMode)
+            startGame()
+        }
     }
 
     override fun onCleared() {
@@ -224,6 +245,7 @@ class GameViewModel @Inject constructor(
         val state = _uiState.value
 
         if (state !is GameUiState.Playing) return
+        if (state.score == 0) return
 
         viewModelScope.launch {
 

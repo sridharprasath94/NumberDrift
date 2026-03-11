@@ -19,22 +19,42 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val binding: FragmentHomeBinding by viewBinding(FragmentHomeBinding::bind)
     private val viewModel: HomeViewModel by viewModels()
+    private var latestState: HomeUiState.Content? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(binding) {
-            classicModeButton.setOnClickListener {
+
+            classicNewGameButton.setOnClickListener {
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeToGame(GameMode.CLASSIC)
                 )
             }
 
-            drift2ModeButton.setOnClickListener {
+            classicContinueButton.setOnClickListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeToGame(GameMode.CLASSIC)
+                )
+            }
+
+            drift2NewGameButton.setOnClickListener {
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeToGame(GameMode.DRIFT_2S)
                 )
             }
 
-            drift1ModeButton.setOnClickListener {
+            drift2ContinueButton.setOnClickListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeToGame(GameMode.DRIFT_2S)
+                )
+            }
+
+            drift1NewGameButton.setOnClickListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeToGame(GameMode.DRIFT_1S)
+                )
+            }
+
+            drift1ContinueButton.setOnClickListener {
                 findNavController().navigate(
                     HomeFragmentDirections.actionHomeToGame(GameMode.DRIFT_1S)
                 )
@@ -58,12 +78,50 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 viewModel.uiState.collect { state ->
                     when (state) {
                         is HomeUiState.Content -> {
-                            binding.classicHighScore.text =
+
+                            latestState = state
+
+                            binding.classicBestScore.text =
                                 getString(R.string.best_score_format, state.bestScoreClassicMode)
-                            binding.drift2HighScore.text =
+
+                            if (state.savedClassicScore != null) {
+                                binding.classicContinueButton.visibility = View.VISIBLE
+                                binding.classicSavedScore.visibility = View.VISIBLE
+                                binding.classicSavedScore.text =
+                                    getString(R.string.score_format, state.savedClassicScore)
+                                binding.classicContinueButton.text = getString(R.string.continue_game)
+                            } else {
+                                binding.classicContinueButton.visibility = View.GONE
+                                binding.classicSavedScore.visibility = View.GONE
+                            }
+
+                            binding.drift2BestScore.text =
                                 getString(R.string.best_score_format, state.bestScoreDrift2Mode)
-                            binding.drift1HighScore.text =
+
+                            if (state.savedDrift2Score != null) {
+                                binding.drift2ContinueButton.visibility = View.VISIBLE
+                                binding.drift2SavedScore.visibility = View.VISIBLE
+                                binding.drift2SavedScore.text =
+                                    getString(R.string.score_format, state.savedDrift2Score)
+                                binding.drift2ContinueButton.text = getString(R.string.continue_game)
+                            } else {
+                                binding.drift2ContinueButton.visibility = View.GONE
+                                binding.drift2SavedScore.visibility = View.GONE
+                            }
+
+                            binding.drift1BestScore.text =
                                 getString(R.string.best_score_format, state.bestScoreDrift1Mode)
+
+                            if (state.savedDrift1Score != null) {
+                                binding.drift1ContinueButton.visibility = View.VISIBLE
+                                binding.drift1SavedScore.visibility = View.VISIBLE
+                                binding.drift1SavedScore.text =
+                                    getString(R.string.score_format, state.savedDrift1Score)
+                                binding.drift1ContinueButton.text = getString(R.string.continue_game)
+                            } else {
+                                binding.drift1ContinueButton.visibility = View.GONE
+                                binding.drift1SavedScore.visibility = View.GONE
+                            }
                         }
 
                         else -> Unit

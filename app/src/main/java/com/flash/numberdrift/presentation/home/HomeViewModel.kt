@@ -3,6 +3,7 @@ package com.flash.numberdrift.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flash.numberdrift.domain.usecase.score.GetBestScoreUseCase
+import com.flash.numberdrift.domain.usecase.savedgame.GetSavedGameUseCase
 import com.flash.numberdrift.presentation.shared.GameMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getBestScoreUseCase: GetBestScoreUseCase
+    private val getBestScoreUseCase: GetBestScoreUseCase,
+    private val getSavedGameUseCase: GetSavedGameUseCase
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<HomeUiState> =
@@ -28,10 +30,17 @@ class HomeViewModel @Inject constructor(
         _uiState.value = HomeUiState.Loading
 
         viewModelScope.launch {
+            val savedClassic = getSavedGameUseCase(GameMode.CLASSIC)
+            val savedDrift2 = getSavedGameUseCase(GameMode.DRIFT_2S)
+            val savedDrift1 = getSavedGameUseCase(GameMode.DRIFT_1S)
+
             _uiState.value = HomeUiState.Content(
                 bestScoreClassicMode = getBestScoreUseCase(GameMode.CLASSIC),
                 bestScoreDrift2Mode = getBestScoreUseCase(GameMode.DRIFT_2S),
-                bestScoreDrift1Mode = getBestScoreUseCase(GameMode.DRIFT_1S)
+                bestScoreDrift1Mode = getBestScoreUseCase(GameMode.DRIFT_1S),
+                savedClassicScore = savedClassic?.score,
+                savedDrift2Score = savedDrift2?.score,
+                savedDrift1Score = savedDrift1?.score
             )
         }
     }

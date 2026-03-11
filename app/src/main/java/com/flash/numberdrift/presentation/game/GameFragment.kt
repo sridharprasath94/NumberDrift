@@ -1,9 +1,7 @@
 package com.flash.numberdrift.presentation.game
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.graphics.Color.BLACK
-import android.graphics.Color.WHITE
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.GestureDetector
@@ -20,11 +18,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.flash.numberdrift.framework.effects.MusicManager
 import com.flash.numberdrift.R
 import com.flash.numberdrift.databinding.FragmentGameBinding
 import com.flash.numberdrift.domain.model.Board
 import com.flash.numberdrift.domain.model.Direction
+import com.flash.numberdrift.framework.effects.MusicManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.androidbroadcast.vbpd.viewBinding
