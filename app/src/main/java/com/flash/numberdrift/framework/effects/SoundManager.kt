@@ -49,7 +49,7 @@ class SoundManager @Inject constructor(
             val settings = getGameSettingsUseCase()
             if (!settings.sound) return@launch
             val rate = 0.92f + Random.nextFloat() * 0.16f
-            soundPool.play(moveSoundId, 1f, 1f, 1, 0, rate)
+            soundPool.play(moveSoundId, 0.5f, 0.5f, 1, 0, rate)
         }
     }
 
@@ -58,7 +58,7 @@ class SoundManager @Inject constructor(
             val settings = getGameSettingsUseCase()
             if (!settings.sound) return@launch
             val rate = 0.95f + Random.nextFloat() * 0.12f
-            soundPool.play(mergeSoundId, 1f, 1f, 1, 0, rate)
+            soundPool.play(mergeSoundId, 0.5f, 0.5f, 1, 0, rate)
         }
     }
 
