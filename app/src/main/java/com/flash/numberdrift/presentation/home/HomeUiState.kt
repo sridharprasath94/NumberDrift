@@ -7,6 +7,8 @@ sealed interface HomeUiState {
     object Loading : HomeUiState
 
     data class Content(
-        val bestScore: Int
+        val bestScoreClassicMode: Int,
+        val bestScoreDrift2Mode: Int,
+        val bestScoreDrift1Mode: Int
     ) : HomeUiState
 }

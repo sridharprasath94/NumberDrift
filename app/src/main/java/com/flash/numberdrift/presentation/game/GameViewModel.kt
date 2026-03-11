@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val detectGameOverUseCase: DetectGameOverUseCase,
     private val driftBoardUseCase: DriftBoardUseCase,
     private val moveBoardUseCase: MoveBoardUseCase,
@@ -54,7 +54,7 @@ class GameViewModel @Inject constructor(
 
     private fun saveBestScoreIfNeeded(score: Int) {
         viewModelScope.launch {
-            saveBestScoreUseCase.invoke(score)
+            saveBestScoreUseCase.invoke(score, gameMode)
         }
     }
 
@@ -63,7 +63,7 @@ class GameViewModel @Inject constructor(
 
             _uiState.value = GameUiState.Loading
 
-            val state = startGameUseCase()
+            val state = startGameUseCase(gameMode)
 
             _uiState.value = GameUiState.Playing(
                 board = state.board,

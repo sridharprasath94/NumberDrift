@@ -53,12 +53,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 viewModel.uiState.collect { state ->
                     when (state) {
                         is HomeUiState.Content -> {
-                            binding.drift1HighScore.text =
-                                getString(R.string.best_score_format, state.bestScore)
-                            binding.drift2HighScore.text =
-                                getString(R.string.best_score_format, state.bestScore)
                             binding.classicHighScore.text =
-                                getString(R.string.best_score_format, state.bestScore)
+                                getString(R.string.best_score_format, state.bestScoreClassicMode)
+                            binding.drift2HighScore.text =
+                                getString(R.string.best_score_format, state.bestScoreDrift2Mode)
+                            binding.drift1HighScore.text =
+                                getString(R.string.best_score_format, state.bestScoreDrift1Mode)
                         }
 
                         else -> Unit

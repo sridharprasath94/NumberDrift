@@ -3,6 +3,7 @@ package com.flash.numberdrift.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flash.numberdrift.domain.usecase.GetBestScoreUseCase
+import com.flash.numberdrift.presentation.shared.GameMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,18 +21,17 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState
 
     init {
-        loadBestScore()
+        loadBestScores()
     }
 
-    private fun loadBestScore() {
-
+    private fun loadBestScores() {
         _uiState.value = HomeUiState.Loading
 
         viewModelScope.launch {
-            val bestScore = getBestScoreUseCase()
-
             _uiState.value = HomeUiState.Content(
-                bestScore = bestScore
+                bestScoreClassicMode = getBestScoreUseCase(GameMode.CLASSIC),
+                bestScoreDrift2Mode = getBestScoreUseCase(GameMode.DRIFT_2S),
+                bestScoreDrift1Mode = getBestScoreUseCase(GameMode.DRIFT_1S)
             )
         }
     }
