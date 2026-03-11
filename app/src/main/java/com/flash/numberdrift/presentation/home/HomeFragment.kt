@@ -2,6 +2,7 @@ package com.flash.numberdrift.presentation.home
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,46 +20,50 @@ import kotlinx.coroutines.launch
 class HomeFragment : Fragment(R.layout.fragment_home) {
     private val binding: FragmentHomeBinding by viewBinding(FragmentHomeBinding::bind)
     private val viewModel: HomeViewModel by viewModels()
-    private var latestState: HomeUiState.Content? = null
+
+    private fun setupModeButtons(
+        newGameButton: Button,
+        continueButton: Button,
+        mode: GameMode
+    ) {
+        newGameButton.setOnClickListener {
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeToGame(mode)
+            )
+        }
+
+        continueButton.setOnClickListener {
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeToGame(mode)
+            )
+        }
+    }
+
+    private fun renderModeState(
+        bestScoreView: android.widget.TextView,
+        savedScoreView: android.widget.TextView,
+        continueButton: Button,
+        bestScore: Int,
+        savedScore: Int?
+    ) {
+        bestScoreView.text = getString(R.string.high_score_format, bestScore)
+
+        if (savedScore != null) {
+            continueButton.visibility = View.VISIBLE
+            savedScoreView.visibility = View.VISIBLE
+            savedScoreView.text = getString(R.string.current_score_format, savedScore)
+            continueButton.text = getString(R.string.continue_game)
+        } else {
+            continueButton.visibility = View.GONE
+            savedScoreView.visibility = View.GONE
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(binding) {
-
-            classicNewGameButton.setOnClickListener {
-                findNavController().navigate(
-                    HomeFragmentDirections.actionHomeToGame(GameMode.CLASSIC)
-                )
-            }
-
-            classicContinueButton.setOnClickListener {
-                findNavController().navigate(
-                    HomeFragmentDirections.actionHomeToGame(GameMode.CLASSIC)
-                )
-            }
-
-            drift2NewGameButton.setOnClickListener {
-                findNavController().navigate(
-                    HomeFragmentDirections.actionHomeToGame(GameMode.DRIFT_2S)
-                )
-            }
-
-            drift2ContinueButton.setOnClickListener {
-                findNavController().navigate(
-                    HomeFragmentDirections.actionHomeToGame(GameMode.DRIFT_2S)
-                )
-            }
-
-            drift1NewGameButton.setOnClickListener {
-                findNavController().navigate(
-                    HomeFragmentDirections.actionHomeToGame(GameMode.DRIFT_1S)
-                )
-            }
-
-            drift1ContinueButton.setOnClickListener {
-                findNavController().navigate(
-                    HomeFragmentDirections.actionHomeToGame(GameMode.DRIFT_1S)
-                )
-            }
+            setupModeButtons(classicNewGameButton, classicContinueButton, GameMode.CLASSIC)
+            setupModeButtons(drift2NewGameButton, drift2ContinueButton, GameMode.DRIFT_2S)
+            setupModeButtons(drift1NewGameButton, drift1ContinueButton, GameMode.DRIFT_1S)
 
             settingsButton.setOnClickListener {
                 findNavController().navigate(HomeFragmentDirections.actionHomeToSettings())
@@ -79,49 +84,29 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     when (state) {
                         is HomeUiState.Content -> {
 
-                            latestState = state
+                            renderModeState(
+                                bestScoreView = binding.classicBestScore,
+                                savedScoreView = binding.classicSavedScore,
+                                continueButton = binding.classicContinueButton,
+                                bestScore = state.bestScoreClassicMode,
+                                savedScore = state.savedClassicScore
+                            )
 
-                            binding.classicBestScore.text =
-                                getString(R.string.best_score_format, state.bestScoreClassicMode)
+                            renderModeState(
+                                bestScoreView = binding.drift2BestScore,
+                                savedScoreView = binding.drift2SavedScore,
+                                continueButton = binding.drift2ContinueButton,
+                                bestScore = state.bestScoreDrift2Mode,
+                                savedScore = state.savedDrift2Score
+                            )
 
-                            if (state.savedClassicScore != null) {
-                                binding.classicContinueButton.visibility = View.VISIBLE
-                                binding.classicSavedScore.visibility = View.VISIBLE
-                                binding.classicSavedScore.text =
-                                    getString(R.string.score_format, state.savedClassicScore)
-                                binding.classicContinueButton.text = getString(R.string.continue_game)
-                            } else {
-                                binding.classicContinueButton.visibility = View.GONE
-                                binding.classicSavedScore.visibility = View.GONE
-                            }
-
-                            binding.drift2BestScore.text =
-                                getString(R.string.best_score_format, state.bestScoreDrift2Mode)
-
-                            if (state.savedDrift2Score != null) {
-                                binding.drift2ContinueButton.visibility = View.VISIBLE
-                                binding.drift2SavedScore.visibility = View.VISIBLE
-                                binding.drift2SavedScore.text =
-                                    getString(R.string.score_format, state.savedDrift2Score)
-                                binding.drift2ContinueButton.text = getString(R.string.continue_game)
-                            } else {
-                                binding.drift2ContinueButton.visibility = View.GONE
-                                binding.drift2SavedScore.visibility = View.GONE
-                            }
-
-                            binding.drift1BestScore.text =
-                                getString(R.string.best_score_format, state.bestScoreDrift1Mode)
-
-                            if (state.savedDrift1Score != null) {
-                                binding.drift1ContinueButton.visibility = View.VISIBLE
-                                binding.drift1SavedScore.visibility = View.VISIBLE
-                                binding.drift1SavedScore.text =
-                                    getString(R.string.score_format, state.savedDrift1Score)
-                                binding.drift1ContinueButton.text = getString(R.string.continue_game)
-                            } else {
-                                binding.drift1ContinueButton.visibility = View.GONE
-                                binding.drift1SavedScore.visibility = View.GONE
-                            }
+                            renderModeState(
+                                bestScoreView = binding.drift1BestScore,
+                                savedScoreView = binding.drift1SavedScore,
+                                continueButton = binding.drift1ContinueButton,
+                                bestScore = state.bestScoreDrift1Mode,
+                                savedScore = state.savedDrift1Score
+                            )
                         }
 
                         else -> Unit

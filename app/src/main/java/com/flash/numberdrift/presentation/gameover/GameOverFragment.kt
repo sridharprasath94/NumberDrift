@@ -24,7 +24,7 @@ class GameOverFragment : Fragment(R.layout.fragment_gameover) {
         with(binding) {
             val args = GameOverFragmentArgs.fromBundle(requireArguments())
             args.score.let { score ->
-                scoreText.text = getString(R.string.score_format, score)
+                scoreText.text = getString(R.string.current_score_format, score)
             }
 
             playAgainButton.setOnClickListener {
@@ -59,7 +59,7 @@ class GameOverFragment : Fragment(R.layout.fragment_gameover) {
                     when (state) {
                         is GameOverUiState.Content -> {
                             binding.bestScoreText.text =
-                                getString(R.string.best_score_format, state.bestScore)
+                                getString(R.string.high_score_format, state.bestScore)
                         }
 
                         else -> Unit

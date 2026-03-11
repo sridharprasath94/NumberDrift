@@ -287,8 +287,8 @@ class GameFragment : Fragment(R.layout.fragment_game) {
     }
 
     private fun updateScore(score: Int, bestScore: Int) {
-        binding.scoreText.text = getString(R.string.score_format, score)
-        binding.bestScoreText.text = getString(R.string.best_score_format, bestScore)
+        binding.scoreText.text = getString(R.string.current_score_format, score)
+        binding.bestScoreText.text = getString(R.string.high_score_format, bestScore)
     }
 
     private fun getTileColor(value: Int): Int {
