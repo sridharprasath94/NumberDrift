@@ -1,8 +1,10 @@
 package com.flash.numberdrift.presentation.game
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.Color.BLACK
 import android.graphics.Color.WHITE
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.GestureDetector
 import android.view.Gravity
@@ -53,9 +55,10 @@ class GameFragment : Fragment(R.layout.fragment_game) {
 
                 val tile = TextView(requireContext()).apply {
                     gravity = Gravity.CENTER
-                    textSize = 18f
+                    textSize = 26f
+                    setTypeface(Typeface.DEFAULT_BOLD) // Bold numbers
                     setTextColor(BLACK)
-                    setBackgroundResource(android.R.drawable.dialog_holo_light_frame)
+                    setBackgroundResource(R.drawable.tile_background)
                 }
 
                 val params = GridLayout.LayoutParams().apply {
@@ -64,7 +67,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                     rowSpec = GridLayout.spec(row, 1f)
                     columnSpec = GridLayout.spec(col, 1f)
 
-                    val margin = 12
+                    val margin = 16
                     setMargins(margin, margin, margin, margin)
                 }
 
@@ -164,6 +167,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                             .setTitle("Exit Game")
                             .setMessage("Are you sure you want to leave the current game?")
                             .setPositiveButton("Yes") { _, _ ->
+                                viewModel.saveBestScoreIfNeeded(state.score)
                                 findNavController().navigate(GameFragmentDirections.actionGameToHome())
                             }
                             .setNegativeButton("No", null)
@@ -186,11 +190,6 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                         GameUiState.Initial -> {
                             // nothing yet
                         }
-
-                        GameUiState.Loading -> {
-                            // TODO show loading animation if needed
-                        }
-
                         is GameUiState.Playing -> {
                             renderBoard(state.board)
                             updateScore(state.score, state.bestScore)
@@ -270,6 +269,14 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                 val tile = tiles[row][col]
                 tile.text = if (value == 0) "" else value.toString()
                 tile.setBackgroundColor(getTileColor(value))
+                tile.elevation = if (value == 0) 0f else 10f
+//                tile.animate()
+//                    .scaleX(1.1f)
+//                    .scaleY(1.1f)
+//                    .setDuration(80)
+//                    .withEndAction {
+//                        tile.animate().scaleX(1f).scaleY(1f).duration = 80
+//                    }
             }
         }
     }

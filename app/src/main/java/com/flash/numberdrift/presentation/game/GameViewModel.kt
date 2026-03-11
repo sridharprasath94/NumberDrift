@@ -62,7 +62,7 @@ class GameViewModel @Inject constructor(
         driftJob = null
     }
 
-    private fun saveBestScoreIfNeeded(score: Int) {
+    fun saveBestScoreIfNeeded(score: Int) {
         viewModelScope.launch {
             saveBestScoreUseCase.invoke(score, gameMode)
         }
@@ -70,8 +70,6 @@ class GameViewModel @Inject constructor(
 
     fun startGame() {
         viewModelScope.launch {
-
-            _uiState.value = GameUiState.Loading
 
             val state = startGameUseCase(gameMode)
 
