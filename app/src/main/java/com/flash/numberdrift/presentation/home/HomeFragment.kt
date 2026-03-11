@@ -47,6 +47,11 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         observeViewModel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshBestScores()
+    }
+
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {

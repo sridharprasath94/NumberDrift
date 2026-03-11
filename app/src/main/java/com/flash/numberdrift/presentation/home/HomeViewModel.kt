@@ -21,10 +21,10 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState
 
     init {
-        loadBestScores()
+        refreshBestScores()
     }
 
-    private fun loadBestScores() {
+    fun refreshBestScores() {
         _uiState.value = HomeUiState.Loading
 
         viewModelScope.launch {
