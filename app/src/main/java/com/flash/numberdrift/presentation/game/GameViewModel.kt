@@ -201,6 +201,9 @@ class GameViewModel @Inject constructor(
     }
 
     fun restartGame() {
+        val currentState = _uiState.value
+        if (currentState !is GameUiState.Playing) return
+        saveBestScoreIfNeeded(currentState.score)
         startGame()
     }
 

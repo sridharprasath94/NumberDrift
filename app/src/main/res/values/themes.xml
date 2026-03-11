@@ -11,4 +11,12 @@
         <item name="colorSecondaryVariant">#A67C52</item>
         <item name="colorOnSecondary">@color/black</item>
     </style>
+
+    <style name="WoodDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+
+        <item name="backgroundTint">#F2E5D5</item> <!-- light wood -->
+
+        <item name="colorPrimary">#8B5A2B</item>
+
+    </style>
 </resources>
