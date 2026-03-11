@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">NumberDrift</string>
-    <string name="score_format">Score: %1$d</string>
-    <string name="best_score_format">Best: %1$d</string>
+    <string name="current_score_format">Current Score: %1$d</string>
+    <string name="high_score_format">High Score: %1$d</string>
+    <string name="resume">Resume</string>
+    <string name="restart">Restart</string>
+    <string name="resume_game">Resume Game</string>
+    <string name="resume_game_message">Continue previous game?\nScore: %1$d</string>
+    <string name="continue_with_score">Continue (Score %1$d)</string>
+    <string name="continue_game">Continue</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.flash.numberdrift.domain.repository
 
+import com.flash.numberdrift.domain.model.SavedGame
 import com.flash.numberdrift.presentation.shared.GameMode
 
 interface PreferenceRepository {
@@ -19,6 +20,14 @@ interface PreferenceRepository {
 
     suspend fun isDarkModeEnabled(): Boolean
     suspend fun setDarkModeEnabled(enabled: Boolean)
+
+    suspend fun saveGame(game: SavedGame)
+
+    suspend fun getSavedGame(mode: GameMode): SavedGame?
+
+    suspend fun clearSavedGame(mode: GameMode)
+
+    suspend fun hasSavedGame(mode: GameMode): Boolean
 
 
     /// TODO - Temporary solution, should be replaced with a more robust system for handling purchases and subscriptions

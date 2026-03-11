@@ -5,13 +5,17 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flash.numberdrift.domain.model.Direction
-import com.flash.numberdrift.domain.usecase.DetectGameOverUseCase
-import com.flash.numberdrift.domain.usecase.DriftBoardUseCase
-import com.flash.numberdrift.domain.usecase.HasBoardChangedUseCase
-import com.flash.numberdrift.domain.usecase.MoveBoardUseCase
-import com.flash.numberdrift.domain.usecase.SaveBestScoreUseCase
-import com.flash.numberdrift.domain.usecase.SpawnTilesUseCase
-import com.flash.numberdrift.domain.usecase.StartGameUseCase
+import com.flash.numberdrift.domain.model.SavedGame
+import com.flash.numberdrift.domain.usecase.game.DetectGameOverUseCase
+import com.flash.numberdrift.domain.usecase.game.DriftBoardUseCase
+import com.flash.numberdrift.domain.usecase.game.HasBoardChangedUseCase
+import com.flash.numberdrift.domain.usecase.game.MoveBoardUseCase
+import com.flash.numberdrift.domain.usecase.score.SaveBestScoreUseCase
+import com.flash.numberdrift.domain.usecase.game.SpawnTilesUseCase
+import com.flash.numberdrift.domain.usecase.game.StartGameUseCase
+import com.flash.numberdrift.domain.usecase.savedgame.ClearSavedGameUseCase
+import com.flash.numberdrift.domain.usecase.savedgame.GetSavedGameUseCase
+import com.flash.numberdrift.domain.usecase.savedgame.SaveGameUseCase
 import com.flash.numberdrift.framework.effects.SoundManager
 import com.flash.numberdrift.framework.effects.VibrationManager
 import com.flash.numberdrift.presentation.shared.GameMode
@@ -35,6 +39,9 @@ class GameViewModel @Inject constructor(
     private val saveBestScoreUseCase: SaveBestScoreUseCase,
     private val vibrationManager: VibrationManager,
     private val soundManager: SoundManager,
+    private val saveGameUseCase: SaveGameUseCase,
+    private val clearSavedGameUseCase: ClearSavedGameUseCase,
+    private val getSavedGameUseCase: GetSavedGameUseCase
 ) : ViewModel() {
 
     private val args = GameFragmentArgs.fromSavedStateHandle(savedStateHandle)
@@ -71,14 +78,26 @@ class GameViewModel @Inject constructor(
     fun startGame() {
         viewModelScope.launch {
 
-            val state = startGameUseCase(gameMode)
+            val savedGame = getSavedGameUseCase(gameMode)
 
-            _uiState.value = GameUiState.Playing(
-                board = state.board,
-                score = state.score,
-                bestScore = state.bestScore,
-                gameMode = gameMode
-            )
+            if (savedGame != null) {
+                _uiState.value = GameUiState.Playing(
+                    board = savedGame.board,
+                    score = savedGame.score,
+                    bestScore = savedGame.bestScore,
+                    gameMode = savedGame.gameMode
+                )
+            } else {
+                val state = startGameUseCase(gameMode)
+
+                _uiState.value = GameUiState.Playing(
+                    board = state.board,
+                    score = state.score,
+                    bestScore = state.bestScore,
+                    gameMode = gameMode
+                )
+            }
+
             startDriftTimer()
         }
     }
@@ -106,15 +125,9 @@ class GameViewModel @Inject constructor(
         if (!boardChanged) {
             val isGameOver = detectGameOverUseCase(currentState.board)
             if (isGameOver) {
-                saveBestScoreIfNeeded(currentState.score)
-                viewModelScope.launch {
-                    soundManager.playGameOverSound()
-                }
-                stopDriftTimer()
-                _uiState.value = GameUiState.GameOver(
+                handleGameOver(
                     score = currentState.score,
-                    bestScore = maxOf(currentState.bestScore, currentState.score),
-                    gameMode = gameMode
+                    bestScore = maxOf(currentState.bestScore, currentState.score)
                 )
             }
             return
@@ -128,13 +141,9 @@ class GameViewModel @Inject constructor(
         val isGameOver = detectGameOverUseCase(boardAfterSpawn)
 
         if (isGameOver) {
-            saveBestScoreIfNeeded(newScore)
-            soundManager.playGameOverSound()
-            stopDriftTimer()
-            _uiState.value = GameUiState.GameOver(
+            handleGameOver(
                 score = newScore,
-                bestScore = maxOf(currentState.bestScore, newScore),
-                gameMode = gameMode
+                bestScore = maxOf(currentState.bestScore, newScore)
             )
         } else {
             _uiState.value = GameUiState.Playing(
@@ -185,13 +194,9 @@ class GameViewModel @Inject constructor(
         val isGameOver = detectGameOverUseCase(newBoard)
 
         if (isGameOver) {
-            saveBestScoreIfNeeded(currentState.score)
-            soundManager.playGameOverSound()
-            stopDriftTimer()
-            _uiState.value = GameUiState.GameOver(
+            handleGameOver(
                 score = currentState.score,
-                bestScore = currentState.bestScore,
-                gameMode = gameMode
+                bestScore = currentState.bestScore
             )
         } else {
             _uiState.value = currentState.copy(
@@ -200,15 +205,59 @@ class GameViewModel @Inject constructor(
         }
     }
 
+    private fun handleGameOver(score: Int, bestScore: Int) {
+
+        saveBestScoreIfNeeded(score)
+
+        viewModelScope.launch {
+            clearSavedGameUseCase(gameMode)
+            soundManager.playGameOverSound()
+        }
+
+        stopDriftTimer()
+
+        _uiState.value = GameUiState.GameOver(
+            score = score,
+            bestScore = bestScore,
+            gameMode = gameMode
+        )
+    }
+
     fun restartGame() {
         val currentState = _uiState.value
         if (currentState !is GameUiState.Playing) return
+
         saveBestScoreIfNeeded(currentState.score)
-        startGame()
+
+        viewModelScope.launch {
+            clearSavedGameUseCase(gameMode)
+            startGame()
+        }
     }
 
     override fun onCleared() {
         super.onCleared()
         stopDriftTimer()
+    }
+
+    fun saveGame() {
+
+        val state = _uiState.value
+
+        if (state !is GameUiState.Playing) return
+        if (state.score == 0) return
+
+        viewModelScope.launch {
+
+            saveGameUseCase(
+                SavedGame(
+                    board = state.board,
+                    score = state.score,
+                    bestScore = state.bestScore,
+                    gameMode = state.gameMode,
+                    timestamp = System.currentTimeMillis()
+                )
+            )
+        }
     }
 }

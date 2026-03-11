@@ -1,9 +1,7 @@
 package com.flash.numberdrift.presentation.game
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.graphics.Color.BLACK
-import android.graphics.Color.WHITE
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.GestureDetector
@@ -20,11 +18,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.flash.numberdrift.framework.effects.MusicManager
 import com.flash.numberdrift.R
 import com.flash.numberdrift.databinding.FragmentGameBinding
 import com.flash.numberdrift.domain.model.Board
 import com.flash.numberdrift.domain.model.Direction
+import com.flash.numberdrift.framework.effects.MusicManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import dev.androidbroadcast.vbpd.viewBinding
@@ -173,7 +171,10 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                             .setTitle("Exit Game")
                             .setMessage("Are you sure you want to leave the current game?")
                             .setNegativeButton("NO") { dialog, _ -> dialog.dismiss() }
-                            .setPositiveButton("YES") { _, _ -> findNavController().navigateUp() }
+                            .setPositiveButton("YES") { _, _ ->
+                                viewModel.saveBestScoreIfNeeded(state.score)
+                                findNavController().navigateUp()
+                            }
                             .show()
                     } else {
                         findNavController().navigate(GameFragmentDirections.actionGameToHome())
@@ -286,8 +287,8 @@ class GameFragment : Fragment(R.layout.fragment_game) {
     }
 
     private fun updateScore(score: Int, bestScore: Int) {
-        binding.scoreText.text = getString(R.string.score_format, score)
-        binding.bestScoreText.text = getString(R.string.best_score_format, bestScore)
+        binding.scoreText.text = getString(R.string.current_score_format, score)
+        binding.bestScoreText.text = getString(R.string.high_score_format, bestScore)
     }
 
     private fun getTileColor(value: Int): Int {
@@ -320,6 +321,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
 
     override fun onPause() {
         super.onPause()
+        viewModel.saveGame()
         musicManager.pause()
     }
 

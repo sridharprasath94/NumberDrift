@@ -52,25 +52,63 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:background="@drawable/button_wood"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:orientation="vertical"
+                android:gravity="center">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="Classic Mode"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@android:color/white"/>
 
                 <TextView
-                    android:id="@+id/classicHighScore"
+                    android:id="@+id/classicBestScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Best: 0"
                     android:textSize="14sp"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white"
+                    android:layout_marginTop="4dp"/>
+
+                <TextView
+                    android:id="@+id/classicSavedScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Score: 0"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/white"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/classicContinueButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Continue"
+                        android:visibility="gone"
+                        android:background="@drawable/button_wood"
+                        android:textColor="@android:color/white"/>
+
+                    <Button
+                        android:id="@+id/classicNewGameButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Game"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/button_wood"
+                        android:textColor="@android:color/white"/>
+
+                </LinearLayout>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -92,25 +130,63 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:background="@drawable/button_wood"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:orientation="vertical"
+                android:gravity="center">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="Drift Mode (2s)"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@android:color/white"/>
 
                 <TextView
-                    android:id="@+id/drift2HighScore"
+                    android:id="@+id/drift2BestScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Best: 0"
                     android:textSize="14sp"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white"
+                    android:layout_marginTop="4dp"/>
+
+                <TextView
+                    android:id="@+id/drift2SavedScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Score: 0"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/white"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/drift2ContinueButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Continue"
+                        android:visibility="gone"
+                        android:background="@drawable/button_wood"
+                        android:textColor="@android:color/white"/>
+
+                    <Button
+                        android:id="@+id/drift2NewGameButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Game"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/button_wood"
+                        android:textColor="@android:color/white"/>
+
+                </LinearLayout>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -132,25 +208,63 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:background="@drawable/button_wood"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:orientation="vertical"
+                android:gravity="center">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="Drift Mode (1s)"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="@android:color/white"/>
 
                 <TextView
-                    android:id="@+id/drift1HighScore"
+                    android:id="@+id/drift1BestScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Best: 0"
                     android:textSize="14sp"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white"
+                    android:layout_marginTop="4dp"/>
+
+                <TextView
+                    android:id="@+id/drift1SavedScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Score: 0"
+                    android:textSize="14sp"
+                    android:textColor="@android:color/white"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/drift1ContinueButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Continue"
+                        android:visibility="gone"
+                        android:background="@drawable/button_wood"
+                        android:textColor="@android:color/white"/>
+
+                    <Button
+                        android:id="@+id/drift1NewGameButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="New Game"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/button_wood"
+                        android:textColor="@android:color/white"/>
+
+                </LinearLayout>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

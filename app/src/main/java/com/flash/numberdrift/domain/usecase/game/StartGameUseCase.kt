@@ -1,4 +1,4 @@
-package com.flash.numberdrift.domain.usecase
+package com.flash.numberdrift.domain.usecase.game
 
 import com.flash.numberdrift.domain.model.Board
 import com.flash.numberdrift.domain.model.GameState
