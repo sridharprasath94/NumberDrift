@@ -53,7 +53,7 @@
         android:columnCount="5"
         android:layout_marginTop="48dp"
         android:layout_marginBottom="48dp"
-        android:background="#8B6A4E"
+        android:background="@drawable/board_wood"
         android:padding="6dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@id/driftTimerText"
@@ -78,8 +78,10 @@
             android:id="@+id/restartButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="?attr/colorPrimary"
             android:textColor="@android:color/white"
+            android:background="@drawable/button_wood"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             app:cornerRadius="12dp"
             android:text="Restart"/>
 
