@@ -150,7 +150,13 @@ class GameFragment : Fragment(R.layout.fragment_game) {
 
         with(binding) {
             restartButton.setOnClickListener {
-                viewModel.restartGame()
+                MaterialAlertDialogBuilder(requireContext(), R.style.WoodDialogTheme)
+                    .setTitle("Restart Game")
+                    .setMessage("Are you sure you want to restart the current game?")
+                    .setNegativeButton("NO") { dialog, _ -> dialog.dismiss() }
+                    .setPositiveButton("YES") { _, _ -> viewModel.restartGame() }
+                    .show()
+
             }
         }
 
@@ -163,14 +169,11 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                     val state = viewModel.uiState.value
 
                     if (state is GameUiState.Playing) {
-                        MaterialAlertDialogBuilder(requireContext())
+                        MaterialAlertDialogBuilder(requireContext(), R.style.WoodDialogTheme)
                             .setTitle("Exit Game")
                             .setMessage("Are you sure you want to leave the current game?")
-                            .setPositiveButton("Yes") { _, _ ->
-                                viewModel.saveBestScoreIfNeeded(state.score)
-                                findNavController().navigate(GameFragmentDirections.actionGameToHome())
-                            }
-                            .setNegativeButton("No", null)
+                            .setNegativeButton("NO") { dialog, _ -> dialog.dismiss() }
+                            .setPositiveButton("YES") { _, _ -> findNavController().navigateUp() }
                             .show()
                     } else {
                         findNavController().navigate(GameFragmentDirections.actionGameToHome())
@@ -190,6 +193,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                         GameUiState.Initial -> {
                             // nothing yet
                         }
+
                         is GameUiState.Playing -> {
                             renderBoard(state.board)
                             updateScore(state.score, state.bestScore)

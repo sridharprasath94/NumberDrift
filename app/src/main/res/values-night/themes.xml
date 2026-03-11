@@ -1,13 +1,22 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.NumberDrift" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <!-- Wooden primary colors -->
+        <item name="colorPrimary">#8B5A2B</item>          <!-- Dark wood -->
+        <item name="colorPrimaryVariant">#6F4518</item>   <!-- Deeper wood -->
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary accent (light wood highlight) -->
+        <item name="colorSecondary">#C89F72</item>
+        <item name="colorSecondaryVariant">#A67C52</item>
         <item name="colorOnSecondary">@color/black</item>
+    </style>
+
+    <style name="WoodDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+
+        <item name="backgroundTint">#F2E5D5</item> <!-- light wood -->
+
+        <item name="colorPrimary">#8B5A2B</item>
+
     </style>
 </resources>

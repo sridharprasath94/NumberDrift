@@ -44,7 +44,6 @@
             android:layout_marginTop="12dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="2dp"
-            app:cardBackgroundColor="?attr/colorPrimary"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?attr/selectableItemBackground">
@@ -52,6 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
+                android:background="@drawable/button_wood"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
@@ -91,6 +91,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
+                android:background="@drawable/button_wood"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
@@ -130,6 +131,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
+                android:background="@drawable/button_wood"
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
@@ -190,7 +192,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:text="Settings"
-        android:backgroundTint="?attr/colorPrimary"
+        android:background="@drawable/button_wood"
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
