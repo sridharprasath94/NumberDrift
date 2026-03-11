@@ -144,22 +144,8 @@ class GameFragment : Fragment(R.layout.fragment_game) {
         }
 
         with(binding) {
-
-            // Temporary navigation for testing the navigation flow
-            shuffleButton.setOnClickListener {
-
-                // TODO: Replace this with drift mechanic trigger
-                viewModel.driftBoard()
-
-                val navOptions = NavOptions.Builder()
-                    .setPopUpTo(R.id.gameFragment, true)
-                    .build()
-
-                findNavController().navigate(
-                    R.id.action_game_to_gameOver,
-                    null,
-                    navOptions
-                )
+            restartButton.setOnClickListener {
+                viewModel.restartGame()
             }
         }
 

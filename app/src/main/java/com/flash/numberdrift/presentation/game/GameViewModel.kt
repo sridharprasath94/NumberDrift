@@ -178,4 +178,8 @@ class GameViewModel @Inject constructor(
             )
         }
     }
+
+    fun restartGame() {
+        startGame()
+    }
 }
