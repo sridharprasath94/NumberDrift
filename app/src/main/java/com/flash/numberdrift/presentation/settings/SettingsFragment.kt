@@ -9,25 +9,18 @@ import com.flash.numberdrift.R
 import com.flash.numberdrift.databinding.FragmentSettingsBinding
 import dev.androidbroadcast.vbpd.viewBinding
 
-class SettingsFragment: Fragment(R.layout.fragment_settings) {
+class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val binding: FragmentSettingsBinding by viewBinding(FragmentSettingsBinding::bind)
 
-     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-         with(binding) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        with(binding) {
 
-             removeAdsButton.setOnClickListener {
+            removeAdsButton.setOnClickListener {
+                findNavController().navigate(
+                    SettingsFragmentDirections.actionSettingsToHome()
+                )
+            }
 
-                 val navOptions = NavOptions.Builder()
-                     .setPopUpTo(R.id.settingsFragment, true)
-                     .build()
-
-                 findNavController().navigate(
-                     R.id.action_settings_to_home,
-                     null,
-                     navOptions
-                 )
-             }
-
-         }
-     }
+        }
+    }
 }

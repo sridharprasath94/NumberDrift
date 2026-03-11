@@ -1,5 +1,6 @@
 package com.flash.numberdrift.domain.usecase
 
+import android.util.Log
 import javax.inject.Inject
 import com.flash.numberdrift.domain.model.Board
 
@@ -21,9 +22,10 @@ class DetectGameOverUseCase @Inject constructor() {
 
                 val value = board.cells[row][col]
 
+                // TODO - Change this to 0 and return false (After debugging)
                 // If any empty cell exists, game is not over
-                if (value == 0) {
-                    return false
+                if (value == 8) {
+                    return true
                 }
 
                 // Check right neighbor

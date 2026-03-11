@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Score: 0"
+        android:layout_marginTop="24dp"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Best: 0"
+        android:layout_marginTop="24dp"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
@@ -34,7 +36,7 @@
         android:id="@+id/driftTimerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:inAnimation="@android:anim/fade_in"
         android:outAnimation="@android:anim/fade_out"
         app:layout_constraintTop_toTopOf="parent"
@@ -49,11 +51,11 @@
         android:layout_height="0dp"
         android:rowCount="5"
         android:columnCount="5"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="48dp"
         android:background="#DDDDDD"
         android:padding="6dp"
-        app:layout_constraintTop_toBottomOf="@id/scoreText"
+        app:layout_constraintTop_toBottomOf="@id/driftTimerText"
         app:layout_constraintBottom_toTopOf="@id/buttonContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -64,32 +66,18 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginBottom="48dp"
         android:gravity="center"
-        android:weightSum="3"
+        app:layout_constraintTop_toBottomOf="@id/gameGrid"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <Button
-            android:id="@+id/freezeButton"
-            android:layout_width="0dp"
+            android:id="@+id/restartButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Freeze"/>
-
-        <Button
-            android:id="@+id/clearButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Clear"/>
-
-        <Button
-            android:id="@+id/shuffleButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Shuffle"/>
+            android:text="Restart"/>
 
     </LinearLayout>
 

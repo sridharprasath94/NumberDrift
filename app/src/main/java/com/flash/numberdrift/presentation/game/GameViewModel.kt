@@ -1,5 +1,6 @@
 package com.flash.numberdrift.presentation.game
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.flash.numberdrift.domain.usecase.DetectGameOverUseCase
 import com.flash.numberdrift.domain.usecase.DriftBoardUseCase
@@ -12,6 +13,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.viewModelScope
 import com.flash.numberdrift.domain.model.Direction
+import com.flash.numberdrift.domain.usecase.SaveBestScoreUseCase
+import com.flash.numberdrift.presentation.shared.GameMode
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -19,38 +22,54 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val detectGameOverUseCase: DetectGameOverUseCase,
     private val driftBoardUseCase: DriftBoardUseCase,
     private val moveBoardUseCase: MoveBoardUseCase,
     private val spawnTilesUseCase: SpawnTilesUseCase,
     private val hasBoardChangedUseCase: HasBoardChangedUseCase,
     private val startGameUseCase: StartGameUseCase,
+    private val saveBestScoreUseCase: SaveBestScoreUseCase,
+) : ViewModel() {
 
-    ) : ViewModel() {
+    private val args = GameFragmentArgs.fromSavedStateHandle(savedStateHandle)
+
+    private val gameMode = args.gameMode
 
     private val _uiState =
         MutableStateFlow<GameUiState>(GameUiState.Initial)
 
     val uiState: StateFlow<GameUiState> = _uiState
 
-    private val _driftTimer = MutableStateFlow(3)
+    private val driftDelaySeconds: Int? = when (gameMode) {
+        GameMode.CLASSIC -> null
+        GameMode.DRIFT_2S -> 2
+        GameMode.DRIFT_1S -> 1
+    }
+
+    private val _driftTimer = MutableStateFlow(driftDelaySeconds ?: 0)
     val driftTimer: StateFlow<Int> = _driftTimer
 
-    private val driftDelaySeconds = 3
-
     private var driftJob: Job? = null
+
+    private fun saveBestScoreIfNeeded(score: Int) {
+        viewModelScope.launch {
+            saveBestScoreUseCase.invoke(score, gameMode)
+        }
+    }
 
     fun startGame() {
         viewModelScope.launch {
 
             _uiState.value = GameUiState.Loading
 
-            val state = startGameUseCase()
+            val state = startGameUseCase(gameMode)
 
             _uiState.value = GameUiState.Playing(
                 board = state.board,
                 score = state.score,
-                bestScore = state.bestScore
+                bestScore = state.bestScore,
+                gameMode = gameMode
             )
             startDriftTimer()
         }
@@ -73,7 +92,18 @@ class GameViewModel @Inject constructor(
             movedBoard
         )
 
-        if (!boardChanged) return
+        if (!boardChanged) {
+            val isGameOver = detectGameOverUseCase(currentState.board)
+            if (isGameOver) {
+                saveBestScoreIfNeeded(currentState.score)
+                _uiState.value = GameUiState.GameOver(
+                    score = currentState.score,
+                    bestScore = maxOf(currentState.bestScore, currentState.score),
+                    gameMode = gameMode
+                )
+            }
+            return
+        }
 
         // Spawn new tile
         val boardAfterSpawn = spawnTilesUseCase(movedBoard)
@@ -83,15 +113,18 @@ class GameViewModel @Inject constructor(
         val isGameOver = detectGameOverUseCase(boardAfterSpawn)
 
         if (isGameOver) {
+            saveBestScoreIfNeeded(newScore)
             _uiState.value = GameUiState.GameOver(
                 score = newScore,
-                bestScore = maxOf(currentState.bestScore, newScore)
+                bestScore = maxOf(currentState.bestScore, newScore),
+                gameMode = gameMode
             )
         } else {
             _uiState.value = GameUiState.Playing(
                 board = boardAfterSpawn,
                 score = newScore,
-                bestScore = currentState.bestScore
+                bestScore = currentState.bestScore,
+                gameMode = gameMode
             )
         }
 
@@ -100,13 +133,15 @@ class GameViewModel @Inject constructor(
 
     private fun startDriftTimer() {
 
+        val delaySeconds = driftDelaySeconds ?: return
+
         driftJob?.cancel()
 
         driftJob = viewModelScope.launch {
 
             while (true) {
 
-                for (i in driftDelaySeconds downTo 1) {
+                for (i in delaySeconds downTo 1) {
                     _driftTimer.value = i
                     delay(1000)
                 }
@@ -131,14 +166,20 @@ class GameViewModel @Inject constructor(
         val isGameOver = detectGameOverUseCase(newBoard)
 
         if (isGameOver) {
+            saveBestScoreIfNeeded(currentState.score)
             _uiState.value = GameUiState.GameOver(
                 score = currentState.score,
-                bestScore = currentState.bestScore
+                bestScore = currentState.bestScore,
+                gameMode = gameMode
             )
         } else {
             _uiState.value = currentState.copy(
                 board = newBoard
             )
         }
+    }
+
+    fun restartGame() {
+        startGame()
     }
 }

@@ -5,6 +5,7 @@ import com.flash.numberdrift.domain.repository.PreferenceRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.content.edit
+import com.flash.numberdrift.presentation.shared.GameMode
 
 @Singleton
 class PreferenceRepositoryImpl @Inject constructor(
@@ -12,21 +13,31 @@ class PreferenceRepositoryImpl @Inject constructor(
 ) : PreferenceRepository {
 
     companion object {
-        private const val KEY_BEST_SCORE = "best_score"
+        private const val KEY_CLASSIC_BEST = "best_score_classic"
+        private const val KEY_DRIFT2_BEST = "best_score_drift2"
+        private const val KEY_DRIFT1_BEST = "best_score_drift1"
     }
 
-    override suspend fun getBestScore(): Int {
-        return sharedPreferences.getInt(KEY_BEST_SCORE, 0)
+    private fun keyForMode(mode: GameMode): String {
+        return when (mode) {
+            GameMode.CLASSIC -> KEY_CLASSIC_BEST
+            GameMode.DRIFT_2S -> KEY_DRIFT2_BEST
+            GameMode.DRIFT_1S -> KEY_DRIFT1_BEST
+        }
     }
 
-    override suspend fun saveBestScore(score: Int) {
+    override suspend fun getBestScore(mode: GameMode): Int {
+        return sharedPreferences.getInt(keyForMode(mode), 0)
+    }
 
-        val currentBest = getBestScore()
+    override suspend fun saveBestScore(score: Int, mode: GameMode) {
+
+        val currentBest = getBestScore(mode)
 
         if (score > currentBest) {
             sharedPreferences
                 .edit {
-                    putInt(KEY_BEST_SCORE, score)
+                    putInt(keyForMode(mode), score)
                 }
         }
     }

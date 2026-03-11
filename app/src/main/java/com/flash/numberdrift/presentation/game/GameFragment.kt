@@ -23,7 +23,12 @@ import android.view.MotionEvent
 import kotlin.math.abs
 import android.annotation.SuppressLint
 import android.graphics.Color.*
+import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.toColorInt
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
+import android.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @AndroidEntryPoint
 class GameFragment : Fragment(R.layout.fragment_game) {
@@ -139,90 +144,116 @@ class GameFragment : Fragment(R.layout.fragment_game) {
         }
 
         with(binding) {
-
-            // Temporary navigation for testing the navigation flow
-            shuffleButton.setOnClickListener {
-
-                // TODO: Replace this with drift mechanic trigger
-                viewModel.driftBoard()
-
-                val navOptions = NavOptions.Builder()
-                    .setPopUpTo(R.id.gameFragment, true)
-                    .build()
-
-                findNavController().navigate(
-                    R.id.action_game_to_gameOver,
-                    null,
-                    navOptions
-                )
+            restartButton.setOnClickListener {
+                viewModel.restartGame()
             }
         }
+
+        // Override system back press
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+
+                    val state = viewModel.uiState.value
+
+                    if (state is GameUiState.Playing) {
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Exit Game")
+                            .setMessage("Are you sure you want to leave the current game?")
+                            .setPositiveButton("Yes") { _, _ ->
+                                findNavController().navigate(GameFragmentDirections.actionGameToHome())
+                            }
+                            .setNegativeButton("No", null)
+                            .show()
+                    } else {
+                        findNavController().navigate(GameFragmentDirections.actionGameToHome())
+                    }
+                }
+            }
+        )
     }
 
     private fun observeState() {
-        lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
 
-                when (state) {
+                    when (state) {
 
-                    GameUiState.Initial -> {
-                        // nothing yet
-                    }
+                        GameUiState.Initial -> {
+                            // nothing yet
+                        }
 
-                    GameUiState.Loading -> {
-                        // TODO show loading animation if needed
-                    }
+                        GameUiState.Loading -> {
+                            // TODO show loading animation if needed
+                        }
 
-                    is GameUiState.Playing -> {
-                        renderBoard(state.board)
-                        updateScore(state.score, state.bestScore)
-                    }
+                        is GameUiState.Playing -> {
+                            renderBoard(state.board)
+                            updateScore(state.score, state.bestScore)
+                        }
 
-                    is GameUiState.GameOver -> {
-                        // TODO Navigate using proper arguments
-                        findNavController().navigate(R.id.action_game_to_gameOver)
-                    }
+                        is GameUiState.GameOver -> {
+                            val dir = GameFragmentDirections.actionGameToGameOver(
+                                score = state.score,
+                                bestScore = state.bestScore,
+                                gameMode = state.gameMode
+                            )
 
-                    is GameUiState.Paused -> {
-                        // TODO pause overlay if implemented
+                            findNavController().navigate(dir)
+
+                        }
+
+                        is GameUiState.Paused -> {
+                            // TODO pause overlay if implemented
+                        }
                     }
                 }
             }
+
         }
-        lifecycleScope.launch {
-            viewModel.driftTimer.collect { seconds ->
+        viewLifecycleOwner.lifecycleScope.launch {
+            val gameMode = GameFragmentArgs.fromBundle(requireArguments()).gameMode
+            if (gameMode == com.flash.numberdrift.presentation.shared.GameMode.CLASSIC) return@launch
 
-                val switcher = binding.driftTimerText
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.driftTimer.collect { seconds ->
+                    val switcher = binding.driftTimerText
 
-                val text = if (seconds > 0) {
-                    seconds.toString()
-                } else {
-                    ""
-                }
+                    val text = if (seconds > 0) {
+                        seconds.toString()
+                    } else {
+                        ""
+                    }
+                    switcher.setText(text)
+                    // Shake animation when drift happens
+                    if (seconds == 0) {
+                        binding.gameGrid.animate()
+                            .translationX(10f)
+                            .setDuration(50)
+                            .withEndAction {
 
-                switcher.setText(text)
+                                if (!isAdded || view == null) return@withEndAction
 
-                // Shake animation when drift happens
-                if (seconds == 0) {
-                    binding.gameGrid.animate()
-                        .translationX(10f)
-                        .setDuration(50)
-                        .withEndAction {
-                            binding.gameGrid.animate()
-                                .translationX(-10f)
-                                .setDuration(50)
-                                .withEndAction {
-                                    binding.gameGrid.animate()
-                                        .translationX(0f).duration = 50
-                                }
-                        }
+                                binding.gameGrid.animate()
+                                    .translationX(-10f)
+                                    .setDuration(50)
+                                    .withEndAction {
+
+                                        if (!isAdded || view == null) return@withEndAction
+
+                                        binding.gameGrid.animate()
+                                            .translationX(0f).duration = 50
+                                    }
+                            }
+                    }
                 }
             }
         }
     }
 
     private fun renderBoard(board: Board) {
-
         val size = board.cells.size
 
         if (!::tiles.isInitialized) {
