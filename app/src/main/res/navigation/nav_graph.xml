@@ -74,7 +74,7 @@
             android:id="@+id/action_gameOver_to_home"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="false" />
+            app:popUpToInclusive="true" />
 
         <action
             android:id="@+id/action_gameOver_to_game"
