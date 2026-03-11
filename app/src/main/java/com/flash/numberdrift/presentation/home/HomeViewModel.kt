@@ -2,6 +2,7 @@ package com.flash.numberdrift.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.flash.numberdrift.domain.usecase.savedgame.ClearSavedGameUseCase
 import com.flash.numberdrift.domain.usecase.score.GetBestScoreUseCase
 import com.flash.numberdrift.domain.usecase.savedgame.GetSavedGameUseCase
 import com.flash.numberdrift.presentation.shared.GameMode
@@ -14,6 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getBestScoreUseCase: GetBestScoreUseCase,
+    private val clearSavedGameUseCase: ClearSavedGameUseCase,
     private val getSavedGameUseCase: GetSavedGameUseCase
 ) : ViewModel() {
 
@@ -42,6 +44,13 @@ class HomeViewModel @Inject constructor(
                 savedDrift2Score = savedDrift2?.score,
                 savedDrift1Score = savedDrift1?.score
             )
+        }
+    }
+
+    fun clearSavedGame(mode: GameMode) {
+        viewModelScope.launch {
+            clearSavedGameUseCase(mode)
+            refreshBestScores()
         }
     }
 }

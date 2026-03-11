@@ -27,6 +27,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         mode: GameMode
     ) {
         newGameButton.setOnClickListener {
+            viewModel.clearSavedGame(mode)
             findNavController().navigate(
                 HomeFragmentDirections.actionHomeToGame(mode)
             )
