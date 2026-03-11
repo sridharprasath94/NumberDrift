@@ -1,40 +1,45 @@
 package com.flash.numberdrift.presentation.game
 
-import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
-import com.flash.numberdrift.R
-import com.flash.numberdrift.databinding.FragmentGameBinding
-import androidx.navigation.fragment.findNavController
-import dagger.hilt.android.AndroidEntryPoint
-import dev.androidbroadcast.vbpd.viewBinding
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import android.view.Gravity
-import android.widget.TextView
-import android.widget.GridLayout
-import com.flash.numberdrift.domain.model.Board
-import com.flash.numberdrift.domain.model.Direction
-
-import android.view.GestureDetector
-import android.view.MotionEvent
-import kotlin.math.abs
 import android.annotation.SuppressLint
-import android.graphics.Color.*
+import android.graphics.Color
+import android.graphics.Color.BLACK
+import android.graphics.Color.WHITE
+import android.graphics.Typeface
+import android.os.Bundle
+import android.view.GestureDetector
+import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
+import android.widget.GridLayout
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.toColorInt
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import android.app.AlertDialog
+import androidx.navigation.fragment.findNavController
+import com.flash.numberdrift.framework.effects.MusicManager
+import com.flash.numberdrift.R
+import com.flash.numberdrift.databinding.FragmentGameBinding
+import com.flash.numberdrift.domain.model.Board
+import com.flash.numberdrift.domain.model.Direction
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
+import dev.androidbroadcast.vbpd.viewBinding
+import jakarta.inject.Inject
+import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @AndroidEntryPoint
 class GameFragment : Fragment(R.layout.fragment_game) {
     private val binding: FragmentGameBinding by viewBinding(FragmentGameBinding::bind)
 
     private val viewModel: GameViewModel by viewModels()
+
+    @Inject
+    lateinit var musicManager: MusicManager
 
     private lateinit var gestureDetector: GestureDetector
 
@@ -50,9 +55,10 @@ class GameFragment : Fragment(R.layout.fragment_game) {
 
                 val tile = TextView(requireContext()).apply {
                     gravity = Gravity.CENTER
-                    textSize = 18f
+                    textSize = 26f
+                    setTypeface(Typeface.DEFAULT_BOLD) // Bold numbers
                     setTextColor(BLACK)
-                    setBackgroundResource(android.R.drawable.dialog_holo_light_frame)
+                    setBackgroundResource(R.drawable.tile_background)
                 }
 
                 val params = GridLayout.LayoutParams().apply {
@@ -61,7 +67,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                     rowSpec = GridLayout.spec(row, 1f)
                     columnSpec = GridLayout.spec(col, 1f)
 
-                    val margin = 12
+                    val margin = 16
                     setMargins(margin, margin, margin, margin)
                 }
 
@@ -80,7 +86,6 @@ class GameFragment : Fragment(R.layout.fragment_game) {
             TextView(requireContext()).apply {
                 textSize = 32f
                 gravity = Gravity.CENTER
-                setTextColor(WHITE)
             }
         }
 
@@ -162,6 +167,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                             .setTitle("Exit Game")
                             .setMessage("Are you sure you want to leave the current game?")
                             .setPositiveButton("Yes") { _, _ ->
+                                viewModel.saveBestScoreIfNeeded(state.score)
                                 findNavController().navigate(GameFragmentDirections.actionGameToHome())
                             }
                             .setNegativeButton("No", null)
@@ -184,11 +190,6 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                         GameUiState.Initial -> {
                             // nothing yet
                         }
-
-                        GameUiState.Loading -> {
-                            // TODO show loading animation if needed
-                        }
-
                         is GameUiState.Playing -> {
                             renderBoard(state.board)
                             updateScore(state.score, state.bestScore)
@@ -268,6 +269,14 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                 val tile = tiles[row][col]
                 tile.text = if (value == 0) "" else value.toString()
                 tile.setBackgroundColor(getTileColor(value))
+                tile.elevation = if (value == 0) 0f else 10f
+//                tile.animate()
+//                    .scaleX(1.1f)
+//                    .scaleY(1.1f)
+//                    .setDuration(80)
+//                    .withEndAction {
+//                        tile.animate().scaleX(1f).scaleY(1f).duration = 80
+//                    }
             }
         }
     }
@@ -293,5 +302,25 @@ class GameFragment : Fragment(R.layout.fragment_game) {
             2048 -> "#EDC22E".toColorInt()
             else -> "#3C3A32".toColorInt()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        musicManager.startBackgroundMusic()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        musicManager.resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        musicManager.pause()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        musicManager.stopBackgroundMusic()
     }
 }

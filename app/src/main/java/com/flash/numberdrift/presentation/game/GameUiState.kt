@@ -7,8 +7,6 @@ sealed interface GameUiState {
 
     object  Initial : GameUiState
 
-    object Loading : GameUiState
-
     data class Playing(
         val board: Board,
         val score: Int,

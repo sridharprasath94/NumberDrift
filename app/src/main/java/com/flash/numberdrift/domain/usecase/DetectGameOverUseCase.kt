@@ -22,10 +22,9 @@ class DetectGameOverUseCase @Inject constructor() {
 
                 val value = board.cells[row][col]
 
-                // TODO - Change this to 0 and return false (After debugging)
                 // If any empty cell exists, game is not over
-                if (value == 8) {
-                    return true
+                if (value == 0) {
+                    return false
                 }
 
                 // Check right neighbor
