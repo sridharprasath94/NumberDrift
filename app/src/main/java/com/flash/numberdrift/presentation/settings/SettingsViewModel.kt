@@ -1,5 +1,6 @@
 package com.flash.numberdrift.presentation.settings
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
@@ -43,6 +44,11 @@ class SettingsViewModel @Inject constructor(
 
     fun updateDarkMode(enabled: Boolean) {
         val current = _settings.value ?: return
+        if (enabled) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
         save(current.copy(darkMode = enabled))
     }
 
