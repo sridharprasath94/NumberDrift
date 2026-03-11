@@ -12,6 +12,8 @@ import kotlinx.coroutines.launch
 import com.flash.numberdrift.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 
+import kotlin.random.Random
+
 class SoundManager @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val getGameSettingsUseCase: GetGameSettingsUseCase,
@@ -36,17 +38,18 @@ class SoundManager @Inject constructor(
             .setAudioAttributes(audioAttributes)
             .build()
 
-        moveSoundId = soundPool.load(context, R.raw.move, 1)
-        mergeSoundId = soundPool.load(context, R.raw.merge, 1)
-        driftSoundId = soundPool.load(context, R.raw.drift, 1)
-        gameOverSoundId = soundPool.load(context, R.raw.game_over, 1)
+        moveSoundId = soundPool.load(context, R.raw.board_move, 1)
+        mergeSoundId = soundPool.load(context, R.raw.board_merge, 1)
+        driftSoundId = soundPool.load(context, R.raw.board_drift, 1)
+        gameOverSoundId = soundPool.load(context, R.raw.board_game_over, 1)
     }
 
     fun playMoveSound() {
         scope.launch {
             val settings = getGameSettingsUseCase()
             if (!settings.sound) return@launch
-            soundPool.play(moveSoundId, 1f, 1f, 1, 0, 1f)
+            val rate = 0.92f + Random.nextFloat() * 0.16f
+            soundPool.play(moveSoundId, 1f, 1f, 1, 0, rate)
         }
     }
 
@@ -54,7 +57,8 @@ class SoundManager @Inject constructor(
         scope.launch {
             val settings = getGameSettingsUseCase()
             if (!settings.sound) return@launch
-            soundPool.play(mergeSoundId, 1f, 1f, 1, 0, 1f)
+            val rate = 0.95f + Random.nextFloat() * 0.12f
+            soundPool.play(mergeSoundId, 1f, 1f, 1, 0, rate)
         }
     }
 
@@ -62,7 +66,8 @@ class SoundManager @Inject constructor(
         scope.launch {
             val settings = getGameSettingsUseCase()
             if (!settings.sound) return@launch
-            soundPool.play(driftSoundId, 1f, 1f, 1, 0, 1f)
+            val rate = 0.9f + Random.nextFloat() * 0.2f
+            soundPool.play(driftSoundId, 1f, 1f, 1, 0, rate)
         }
     }
 

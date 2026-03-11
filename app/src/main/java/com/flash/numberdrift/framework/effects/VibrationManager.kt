@@ -26,9 +26,7 @@ class VibrationManager @Inject constructor(
     @RequiresApi(Build.VERSION_CODES.O)
     @RequiresPermission(Manifest.permission.VIBRATE)
     fun vibrateShort() {
-
         scope.launch {
-
             val settings = getGameSettingsUseCase()
             if (!settings.vibration) return@launch
 

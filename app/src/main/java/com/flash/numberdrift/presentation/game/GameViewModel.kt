@@ -1,27 +1,26 @@
 package com.flash.numberdrift.presentation.game
 
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.flash.numberdrift.domain.usecase.DetectGameOverUseCase
-import com.flash.numberdrift.domain.usecase.DriftBoardUseCase
-import com.flash.numberdrift.domain.usecase.MoveBoardUseCase
-import com.flash.numberdrift.domain.usecase.StartGameUseCase
-import com.flash.numberdrift.domain.usecase.HasBoardChangedUseCase
-import com.flash.numberdrift.domain.usecase.SpawnTilesUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.viewModelScope
 import com.flash.numberdrift.domain.model.Direction
+import com.flash.numberdrift.domain.usecase.DetectGameOverUseCase
+import com.flash.numberdrift.domain.usecase.DriftBoardUseCase
+import com.flash.numberdrift.domain.usecase.HasBoardChangedUseCase
+import com.flash.numberdrift.domain.usecase.MoveBoardUseCase
 import com.flash.numberdrift.domain.usecase.SaveBestScoreUseCase
+import com.flash.numberdrift.domain.usecase.SpawnTilesUseCase
+import com.flash.numberdrift.domain.usecase.StartGameUseCase
 import com.flash.numberdrift.framework.effects.SoundManager
 import com.flash.numberdrift.framework.effects.VibrationManager
 import com.flash.numberdrift.presentation.shared.GameMode
-import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -89,10 +88,7 @@ class GameViewModel @Inject constructor(
     fun moveBoard(direction: Direction) {
 
         val currentState = _uiState.value
-
-        viewModelScope.launch {
-            soundManager.playMoveSound()
-        }
+        soundManager.playMoveSound()
         if (currentState !is GameUiState.Playing) return
 
         val (movedBoard, gainedScore) = moveBoardUseCase(
@@ -100,9 +96,7 @@ class GameViewModel @Inject constructor(
             direction
         )
         if (gainedScore > 0) {
-            viewModelScope.launch {
-                soundManager.playMergeSound()
-            }
+            soundManager.playMergeSound()
         }
 
         // If nothing changed, do nothing
@@ -137,9 +131,7 @@ class GameViewModel @Inject constructor(
 
         if (isGameOver) {
             saveBestScoreIfNeeded(newScore)
-            viewModelScope.launch {
-                soundManager.playGameOverSound()
-            }
+            soundManager.playGameOverSound()
             stopDriftTimer()
             _uiState.value = GameUiState.GameOver(
                 score = newScore,
@@ -186,23 +178,17 @@ class GameViewModel @Inject constructor(
 
     fun driftBoard() {
         val currentState = _uiState.value
-
         if (currentState !is GameUiState.Playing) return
-
         val newBoard = driftBoardUseCase(currentState.board)
-        viewModelScope.launch {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrationManager.vibrateShort()
-            }
-            soundManager.playDriftSound()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrationManager.vibrateShort()
         }
+        soundManager.playDriftSound()
         val isGameOver = detectGameOverUseCase(newBoard)
 
         if (isGameOver) {
             saveBestScoreIfNeeded(currentState.score)
-            viewModelScope.launch {
-                soundManager.playGameOverSound()
-            }
+            soundManager.playGameOverSound()
             stopDriftTimer()
             _uiState.value = GameUiState.GameOver(
                 score = currentState.score,
