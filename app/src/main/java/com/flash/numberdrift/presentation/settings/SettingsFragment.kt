@@ -31,11 +31,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                             vibrationSwitch.isChecked = it.vibration
                             darkModeSwitch.isChecked = it.darkMode
 
-                            if (it.adsRemoved) {
-                                removeAdsButton.text = "Ads Removed ✓"
-                            } else {
-                                removeAdsButton.text = "Remove Ads (€1.99)"
-                            }
+//                            if (it.adsRemoved) {
+//                                removeAdsButton.text = "Ads Removed ✓"
+//                            } else {
+//                                removeAdsButton.text = "Remove Ads (€1.99)"
+//                            }
                         }
                     }
                 }

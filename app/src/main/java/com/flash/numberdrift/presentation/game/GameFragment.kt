@@ -83,7 +83,6 @@ class GameFragment : Fragment(R.layout.fragment_game) {
             TextView(requireContext()).apply {
                 textSize = 32f
                 gravity = Gravity.CENTER
-                setTextColor(WHITE)
             }
         }
 

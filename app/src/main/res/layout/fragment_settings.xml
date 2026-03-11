@@ -51,6 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Remove Ads (€1.99)"
+            android:visibility="invisible"
             android:layout_marginTop="32dp"/>
 
     </LinearLayout>
