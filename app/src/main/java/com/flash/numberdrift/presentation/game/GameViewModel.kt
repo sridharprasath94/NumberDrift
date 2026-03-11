@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flash.numberdrift.domain.model.Direction
+import com.flash.numberdrift.domain.model.SavedGame
 import com.flash.numberdrift.domain.usecase.game.DetectGameOverUseCase
 import com.flash.numberdrift.domain.usecase.game.DriftBoardUseCase
 import com.flash.numberdrift.domain.usecase.game.HasBoardChangedUseCase
@@ -12,6 +13,9 @@ import com.flash.numberdrift.domain.usecase.game.MoveBoardUseCase
 import com.flash.numberdrift.domain.usecase.score.SaveBestScoreUseCase
 import com.flash.numberdrift.domain.usecase.game.SpawnTilesUseCase
 import com.flash.numberdrift.domain.usecase.game.StartGameUseCase
+import com.flash.numberdrift.domain.usecase.savedgame.ClearSavedGameUseCase
+import com.flash.numberdrift.domain.usecase.savedgame.GetSavedGameUseCase
+import com.flash.numberdrift.domain.usecase.savedgame.SaveGameUseCase
 import com.flash.numberdrift.framework.effects.SoundManager
 import com.flash.numberdrift.framework.effects.VibrationManager
 import com.flash.numberdrift.presentation.shared.GameMode
@@ -35,6 +39,9 @@ class GameViewModel @Inject constructor(
     private val saveBestScoreUseCase: SaveBestScoreUseCase,
     private val vibrationManager: VibrationManager,
     private val soundManager: SoundManager,
+    private val saveGameUseCase: SaveGameUseCase,
+    private val clearSavedGameUseCase: ClearSavedGameUseCase,
+    private val getSavedGameUseCase: GetSavedGameUseCase
 ) : ViewModel() {
 
     private val args = GameFragmentArgs.fromSavedStateHandle(savedStateHandle)
@@ -210,5 +217,25 @@ class GameViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         stopDriftTimer()
+    }
+
+    fun saveGame() {
+
+        val state = _uiState.value
+
+        if (state !is GameUiState.Playing) return
+
+        viewModelScope.launch {
+
+            saveGameUseCase(
+                SavedGame(
+                    board = state.board,
+                    score = state.score,
+                    bestScore = state.bestScore,
+                    gameMode = state.gameMode,
+                    timestamp = System.currentTimeMillis()
+                )
+            )
+        }
     }
 }

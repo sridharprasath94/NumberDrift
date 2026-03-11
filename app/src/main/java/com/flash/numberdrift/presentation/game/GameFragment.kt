@@ -323,6 +323,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
 
     override fun onPause() {
         super.onPause()
+        viewModel.saveGame()
         musicManager.pause()
     }
 

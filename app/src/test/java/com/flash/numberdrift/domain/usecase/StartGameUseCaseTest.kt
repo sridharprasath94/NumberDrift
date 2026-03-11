@@ -2,6 +2,7 @@ package com.flash.numberdrift.domain.usecase
 
 import com.flash.numberdrift.domain.repository.PreferenceRepository
 import com.flash.numberdrift.domain.usecase.game.StartGameUseCase
+import com.flash.numberdrift.presentation.shared.GameMode
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -15,11 +16,11 @@ class StartGameUseCaseTest {
     // Fake repository for testing
     private val fakeRepository = object : PreferenceRepository {
 
-        override suspend fun getBestScore(): Int {
+        override suspend fun getBestScore(mode: GameMode): Int {
             return 50
         }
 
-        override suspend fun saveBestScore(score: Int) {
+        override suspend fun saveBestScore(score: Int, mode: GameMode) {
             // no-op for tests
         }
     }
