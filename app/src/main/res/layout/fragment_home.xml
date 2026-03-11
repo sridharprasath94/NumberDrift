@@ -78,10 +78,10 @@
         android:text="Daily Challenge"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/modeContainer"
         app:layout_constraintBottom_toTopOf="@id/dailyChallengeGoal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/modeContainer" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
         android:id="@+id/dailyChallengeGoal"
@@ -89,10 +89,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Reach score 256"
+        app:layout_constraintTop_toBottomOf="@id/dailyChallengeText"
         app:layout_constraintBottom_toTopOf="@id/settingsButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dailyChallengeText" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- Settings -->
     <Button
