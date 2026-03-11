@@ -47,7 +47,7 @@ class SoundManager @Inject constructor(
     fun playMoveSound() {
         scope.launch {
             val settings = getGameSettingsUseCase()
-            if (!settings.sound) return@launch
+            if (!settings.soundEffects) return@launch
             val rate = 0.92f + Random.nextFloat() * 0.16f
             soundPool.play(moveSoundId, 0.5f, 0.5f, 1, 0, rate)
         }
@@ -56,7 +56,7 @@ class SoundManager @Inject constructor(
     fun playMergeSound() {
         scope.launch {
             val settings = getGameSettingsUseCase()
-            if (!settings.sound) return@launch
+            if (!settings.soundEffects) return@launch
             val rate = 0.95f + Random.nextFloat() * 0.12f
             soundPool.play(mergeSoundId, 0.5f, 0.5f, 1, 0, rate)
         }
@@ -65,7 +65,7 @@ class SoundManager @Inject constructor(
     fun playDriftSound() {
         scope.launch {
             val settings = getGameSettingsUseCase()
-            if (!settings.sound) return@launch
+            if (!settings.soundEffects) return@launch
             val rate = 0.9f + Random.nextFloat() * 0.2f
             soundPool.play(driftSoundId, 1f, 1f, 1, 0, rate)
         }
@@ -74,7 +74,7 @@ class SoundManager @Inject constructor(
     fun playGameOverSound() {
         scope.launch {
             val settings = getGameSettingsUseCase()
-            if (!settings.sound) return@launch
+            if (!settings.soundEffects) return@launch
             soundPool.play(gameOverSoundId, 1f, 1f, 1, 0, 1f)
         }
     }

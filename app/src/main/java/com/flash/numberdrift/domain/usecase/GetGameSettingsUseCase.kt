@@ -10,7 +10,8 @@ class GetGameSettingsUseCase @Inject constructor(
 
     suspend operator fun invoke(): GameSettings =
         GameSettings(
-            sound = preferenceRepository.isSoundEnabled(),
+            soundEffects = preferenceRepository.isSoundEffectsEnabled(),
+            music = preferenceRepository.isMusicEnabled(),
             vibration = preferenceRepository.isVibrationEnabled(),
             darkMode = preferenceRepository.isDarkModeEnabled(),
             adsRemoved = preferenceRepository.isAdsRemoved()

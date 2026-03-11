@@ -8,8 +8,11 @@ interface PreferenceRepository {
 
     suspend fun saveBestScore(score: Int, mode: GameMode)
 
-    suspend fun isSoundEnabled(): Boolean
-    suspend fun setSoundEnabled(enabled: Boolean)
+    suspend fun isSoundEffectsEnabled(): Boolean
+    suspend fun setSoundEffectsEnabled(enabled: Boolean)
+
+    suspend fun isMusicEnabled(): Boolean
+    suspend fun setMusicEnabled(enabled: Boolean)
 
     suspend fun isVibrationEnabled(): Boolean
     suspend fun setVibrationEnabled(enabled: Boolean)

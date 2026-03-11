@@ -26,7 +26,7 @@ class MusicManager @Inject constructor(
         if (mediaPlayer != null) return
         scope.launch {
             val settings = getGameSettingsUseCase()
-            if (!settings.sound) return@launch
+            if (!settings.music) return@launch
 
             mediaPlayer = MediaPlayer.create(context, R.raw.bg_music).apply {
                 isLooping = true

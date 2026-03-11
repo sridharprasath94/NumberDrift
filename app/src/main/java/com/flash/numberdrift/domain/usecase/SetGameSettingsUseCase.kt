@@ -10,7 +10,8 @@ class SetGameSettingsUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(gameSettings: GameSettings): GameSettings {
-        preferenceRepository.setSoundEnabled(gameSettings.sound)
+        preferenceRepository.setSoundEffectsEnabled(gameSettings.soundEffects)
+        preferenceRepository.setMusicEnabled(gameSettings.music)
         preferenceRepository.setVibrationEnabled(gameSettings.vibration)
         preferenceRepository.setDarkModeEnabled(gameSettings.darkMode)
         preferenceRepository.setAdsRemoved(gameSettings.adsRemoved)

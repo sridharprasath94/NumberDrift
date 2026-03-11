@@ -32,9 +32,14 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
-    fun updateSound(enabled: Boolean) {
+    fun updateSoundEffects(enabled: Boolean) {
         val current = _settings.value ?: return
-        save(current.copy(sound = enabled))
+        save(current.copy(soundEffects = enabled))
+    }
+
+    fun updateMusic(enabled: Boolean) {
+        val current = _settings.value ?: return
+        save(current.copy(music = enabled))
     }
 
     fun updateVibration(enabled: Boolean) {

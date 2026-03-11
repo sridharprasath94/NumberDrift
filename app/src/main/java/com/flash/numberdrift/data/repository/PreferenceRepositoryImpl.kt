@@ -16,7 +16,8 @@ class PreferenceRepositoryImpl @Inject constructor(
         private const val KEY_CLASSIC_BEST = "best_score_classic"
         private const val KEY_DRIFT2_BEST = "best_score_drift2"
         private const val KEY_DRIFT1_BEST = "best_score_drift1"
-        private const val KEY_SOUND = "settings_sound"
+        private const val KEY_SOUND_EFFECTS = "settings_sound_effects"
+        private const val KEY_MUSIC = "settings_music"
         private const val KEY_VIBRATION = "settings_vibration"
         private const val KEY_DARK_MODE = "settings_dark_mode"
         private const val KEY_ADS_REMOVED = "ads_removed"
@@ -46,12 +47,20 @@ class PreferenceRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun isSoundEnabled(): Boolean {
-        return sharedPreferences.getBoolean(KEY_SOUND, true)
+    override suspend fun isSoundEffectsEnabled(): Boolean {
+        return sharedPreferences.getBoolean(KEY_SOUND_EFFECTS, true)
     }
 
-    override suspend fun setSoundEnabled(enabled: Boolean) {
-        sharedPreferences.edit { putBoolean(KEY_SOUND, enabled) }
+    override suspend fun setSoundEffectsEnabled(enabled: Boolean) {
+        sharedPreferences.edit { putBoolean(KEY_SOUND_EFFECTS, enabled) }
+    }
+
+    override suspend fun isMusicEnabled(): Boolean {
+        return sharedPreferences.getBoolean(KEY_MUSIC, true)
+    }
+
+    override suspend fun setMusicEnabled(enabled: Boolean) {
+        sharedPreferences.edit { putBoolean(KEY_MUSIC, enabled) }
     }
 
     override suspend fun isVibrationEnabled(): Boolean {

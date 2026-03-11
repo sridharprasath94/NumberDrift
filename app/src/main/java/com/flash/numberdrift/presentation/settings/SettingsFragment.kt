@@ -2,13 +2,11 @@ package com.flash.numberdrift.presentation.settings
 
 import android.os.Bundle
 import android.view.View
-import androidx.compose.ui.tooling.preview.AndroidUiMode
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import com.flash.numberdrift.R
 import com.flash.numberdrift.databinding.FragmentSettingsBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,10 +25,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.settings.collect { settings ->
                         settings?.let {
-                            soundSwitch.isChecked = it.sound
+                            soundSwitch.isChecked = it.soundEffects
+                            musicSwitch.isChecked = it.music
                             vibrationSwitch.isChecked = it.vibration
                             darkModeSwitch.isChecked = it.darkMode
-
+                            /// TODO: Implement in-app purchase and update button text based on purchase status
 //                            if (it.adsRemoved) {
 //                                removeAdsButton.text = "Ads Removed ✓"
 //                            } else {
@@ -42,7 +41,11 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
             }
 
             soundSwitch.setOnCheckedChangeListener { _, checked ->
-                viewModel.updateSound(checked)
+                viewModel.updateSoundEffects(checked)
+            }
+
+            musicSwitch.setOnCheckedChangeListener { _, checked ->
+                viewModel.updateMusic(checked)
             }
 
             vibrationSwitch.setOnCheckedChangeListener { _, checked ->
