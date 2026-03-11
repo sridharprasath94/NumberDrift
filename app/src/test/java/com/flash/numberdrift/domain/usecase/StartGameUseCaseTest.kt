@@ -1,6 +1,7 @@
 package com.flash.numberdrift.domain.usecase
 
 import com.flash.numberdrift.domain.repository.PreferenceRepository
+import com.flash.numberdrift.domain.usecase.game.StartGameUseCase
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

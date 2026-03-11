@@ -2,7 +2,7 @@ package com.flash.numberdrift.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flash.numberdrift.domain.usecase.GetBestScoreUseCase
+import com.flash.numberdrift.domain.usecase.score.GetBestScoreUseCase
 import com.flash.numberdrift.presentation.shared.GameMode
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,6 +1,5 @@
-package com.flash.numberdrift.domain.usecase
+package com.flash.numberdrift.domain.usecase.game
 
-import android.util.Log
 import javax.inject.Inject
 import com.flash.numberdrift.domain.model.Board
 

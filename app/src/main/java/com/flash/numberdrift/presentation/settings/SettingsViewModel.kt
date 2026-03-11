@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import com.flash.numberdrift.domain.usecase.GetGameSettingsUseCase
-import com.flash.numberdrift.domain.usecase.SetGameSettingsUseCase
+import com.flash.numberdrift.domain.usecase.settings.GetGameSettingsUseCase
+import com.flash.numberdrift.domain.usecase.settings.SetGameSettingsUseCase
 import com.flash.numberdrift.presentation.shared.GameSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

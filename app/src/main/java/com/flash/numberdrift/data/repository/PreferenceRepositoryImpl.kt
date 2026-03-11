@@ -5,7 +5,10 @@ import com.flash.numberdrift.domain.repository.PreferenceRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.core.content.edit
+import com.flash.numberdrift.domain.model.SavedGame
 import com.flash.numberdrift.presentation.shared.GameMode
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 @Singleton
 class PreferenceRepositoryImpl @Inject constructor(
@@ -21,6 +24,12 @@ class PreferenceRepositoryImpl @Inject constructor(
         private const val KEY_VIBRATION = "settings_vibration"
         private const val KEY_DARK_MODE = "settings_dark_mode"
         private const val KEY_ADS_REMOVED = "ads_removed"
+    }
+
+    private val gson = Gson()
+
+    private fun savedGameKey(mode: GameMode): String {
+        return "saved_game_${mode.name}"
     }
 
     private fun keyForMode(mode: GameMode): String {
@@ -87,6 +96,35 @@ class PreferenceRepositoryImpl @Inject constructor(
                 enabled
             )
         }
+    }
+
+    override suspend fun saveGame(game: SavedGame) {
+
+        val json = gson.toJson(game)
+
+        sharedPreferences.edit {
+            putString(savedGameKey(game.gameMode), json)
+        }
+    }
+
+    override suspend fun getSavedGame(mode: GameMode): SavedGame? {
+
+        val json = sharedPreferences.getString(savedGameKey(mode), null)
+            ?: return null
+
+        return gson.fromJson(json, SavedGame::class.java)
+    }
+
+    override suspend fun clearSavedGame(mode: GameMode) {
+
+        sharedPreferences.edit {
+            remove(savedGameKey(mode))
+        }
+    }
+
+    override suspend fun hasSavedGame(mode: GameMode): Boolean {
+
+        return sharedPreferences.contains(savedGameKey(mode))
     }
 
     override suspend fun isAdsRemoved(): Boolean {

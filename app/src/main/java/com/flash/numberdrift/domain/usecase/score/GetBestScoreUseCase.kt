@@ -1,4 +1,4 @@
-package com.flash.numberdrift.domain.usecase
+package com.flash.numberdrift.domain.usecase.score
 
 import com.flash.numberdrift.domain.repository.PreferenceRepository
 import com.flash.numberdrift.presentation.shared.GameMode

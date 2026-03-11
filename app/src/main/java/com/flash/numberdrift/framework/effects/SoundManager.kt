@@ -4,7 +4,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.SoundPool
 import com.flash.numberdrift.R
-import com.flash.numberdrift.domain.usecase.GetGameSettingsUseCase
+import com.flash.numberdrift.domain.usecase.settings.GetGameSettingsUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope

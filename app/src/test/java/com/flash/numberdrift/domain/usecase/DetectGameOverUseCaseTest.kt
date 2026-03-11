@@ -1,6 +1,7 @@
 package com.flash.numberdrift.domain.usecase
 
 import com.flash.numberdrift.domain.model.Board
+import com.flash.numberdrift.domain.usecase.game.DetectGameOverUseCase
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before

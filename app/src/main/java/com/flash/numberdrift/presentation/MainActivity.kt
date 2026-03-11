@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import com.flash.numberdrift.R
-import com.flash.numberdrift.domain.usecase.GetGameSettingsUseCase
+import com.flash.numberdrift.domain.usecase.settings.GetGameSettingsUseCase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

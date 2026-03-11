@@ -8,7 +8,7 @@ import android.os.Vibrator
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import com.flash.numberdrift.di.IoDispatcher
-import com.flash.numberdrift.domain.usecase.GetGameSettingsUseCase
+import com.flash.numberdrift.domain.usecase.settings.GetGameSettingsUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
