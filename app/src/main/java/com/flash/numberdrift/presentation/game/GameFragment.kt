@@ -23,7 +23,10 @@ import android.view.MotionEvent
 import kotlin.math.abs
 import android.annotation.SuppressLint
 import android.graphics.Color.*
+import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.toColorInt
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 
 @AndroidEntryPoint
 class GameFragment : Fragment(R.layout.fragment_game) {
@@ -157,72 +160,98 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                 )
             }
         }
+
+        // Override system back press to go to Home instead of Game
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(R.id.action_game_to_home)
+                }
+            }
+        )
     }
 
     private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.uiState.collect { state ->
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
 
-                when (state) {
+                    when (state) {
 
-                    GameUiState.Initial -> {
-                        // nothing yet
-                    }
+                        GameUiState.Initial -> {
+                            // nothing yet
+                        }
 
-                    GameUiState.Loading -> {
-                        // TODO show loading animation if needed
-                    }
+                        GameUiState.Loading -> {
+                            // TODO show loading animation if needed
+                        }
 
-                    is GameUiState.Playing -> {
-                        renderBoard(state.board)
-                        updateScore(state.score, state.bestScore)
-                    }
+                        is GameUiState.Playing -> {
+                            renderBoard(state.board)
+                            updateScore(state.score, state.bestScore)
+                        }
 
-                    is GameUiState.GameOver -> {
-                        // TODO Navigate using proper arguments
-                        findNavController().navigate(R.id.action_game_to_gameOver)
-                    }
+                        is GameUiState.GameOver -> {
+                            val dir = GameFragmentDirections.actionGameToGameOver(
+                                score = state.score,
+                                bestScore = state.bestScore
+                            )
 
-                    is GameUiState.Paused -> {
-                        // TODO pause overlay if implemented
+                            findNavController().navigate(dir)
+
+                        }
+
+                        is GameUiState.Paused -> {
+                            // TODO pause overlay if implemented
+                        }
                     }
                 }
             }
+
         }
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.driftTimer.collect { seconds ->
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.driftTimer.collect { seconds ->
 
-                val switcher = binding.driftTimerText
+                    val switcher = binding.driftTimerText
 
-                val text = if (seconds > 0) {
-                    seconds.toString()
-                } else {
-                    ""
-                }
+                    val text = if (seconds > 0) {
+                        seconds.toString()
+                    } else {
+                        ""
+                    }
 
-                switcher.setText(text)
+                    switcher.setText(text)
 
-                // Shake animation when drift happens
-                if (seconds == 0) {
-                    binding.gameGrid.animate()
-                        .translationX(10f)
-                        .setDuration(50)
-                        .withEndAction {
-                            binding.gameGrid.animate()
-                                .translationX(-10f)
-                                .setDuration(50)
-                                .withEndAction {
-                                    binding.gameGrid.animate()
-                                        .translationX(0f).duration = 50
-                                }
-                        }
+                    // Shake animation when drift happens
+                    if (seconds == 0) {
+                        binding.gameGrid.animate()
+                            .translationX(10f)
+                            .setDuration(50)
+                            .withEndAction {
+
+                                if (!isAdded || view == null) return@withEndAction
+
+                                binding.gameGrid.animate()
+                                    .translationX(-10f)
+                                    .setDuration(50)
+                                    .withEndAction {
+
+                                        if (!isAdded || view == null) return@withEndAction
+
+                                        binding.gameGrid.animate()
+                                            .translationX(0f).duration = 50
+                                    }
+                            }
+                    }
                 }
             }
+
         }
     }
 
     private fun renderBoard(board: Board) {
-
         val size = board.cells.size
 
         if (!::tiles.isInitialized) {
