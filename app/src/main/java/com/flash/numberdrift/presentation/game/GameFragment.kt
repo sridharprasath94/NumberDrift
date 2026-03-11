@@ -172,7 +172,14 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                     val state = viewModel.uiState.value
 
                     if (state is GameUiState.Playing) {
-                        showExitGameDialog()
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle("Exit Game")
+                            .setMessage("Are you sure you want to leave the current game?")
+                            .setPositiveButton("Yes") { _, _ ->
+                                findNavController().navigate(GameFragmentDirections.actionGameToHome())
+                            }
+                            .setNegativeButton("No", null)
+                            .show()
                     } else {
                         findNavController().navigate(GameFragmentDirections.actionGameToHome())
                     }
@@ -221,9 +228,11 @@ class GameFragment : Fragment(R.layout.fragment_game) {
 
         }
         viewLifecycleOwner.lifecycleScope.launch {
+            val gameMode = GameFragmentArgs.fromBundle(requireArguments()).gameMode
+            if (gameMode == com.flash.numberdrift.presentation.shared.GameMode.CLASSIC) return@launch
+
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.driftTimer.collect { seconds ->
-
                     val switcher = binding.driftTimerText
 
                     val text = if (seconds > 0) {
@@ -231,9 +240,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                     } else {
                         ""
                     }
-
                     switcher.setText(text)
-
                     // Shake animation when drift happens
                     if (seconds == 0) {
                         binding.gameGrid.animate()
@@ -257,19 +264,7 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                     }
                 }
             }
-
         }
-    }
-
-    private fun showExitGameDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Exit Game")
-            .setMessage("Are you sure you want to leave the current game?")
-            .setPositiveButton("Yes") { _, _ ->
-                findNavController().navigate(R.id.action_game_to_home)
-            }
-            .setNegativeButton("No", null)
-            .show()
     }
 
     private fun renderBoard(board: Board) {

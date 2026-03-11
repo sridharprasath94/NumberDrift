@@ -33,7 +33,9 @@
 
         <action
             android:id="@+id/action_game_to_home"
-            app:destination="@id/homeFragment" />
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
 
     </fragment>
 
