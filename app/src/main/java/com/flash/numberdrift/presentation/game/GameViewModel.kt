@@ -1,5 +1,6 @@
 package com.flash.numberdrift.presentation.game
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.flash.numberdrift.domain.usecase.DetectGameOverUseCase
 import com.flash.numberdrift.domain.usecase.DriftBoardUseCase
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import androidx.lifecycle.viewModelScope
 import com.flash.numberdrift.domain.model.Direction
 import com.flash.numberdrift.domain.usecase.SaveBestScoreUseCase
+import com.flash.numberdrift.presentation.shared.GameMode
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -20,6 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GameViewModel @Inject constructor(
+    private val savedStateHandle: SavedStateHandle,
     private val detectGameOverUseCase: DetectGameOverUseCase,
     private val driftBoardUseCase: DriftBoardUseCase,
     private val moveBoardUseCase: MoveBoardUseCase,
@@ -29,15 +32,23 @@ class GameViewModel @Inject constructor(
     private val saveBestScoreUseCase: SaveBestScoreUseCase,
 ) : ViewModel() {
 
+    private val args = GameFragmentArgs.fromSavedStateHandle(savedStateHandle)
+
+    private val gameMode = args.gameMode
+
     private val _uiState =
         MutableStateFlow<GameUiState>(GameUiState.Initial)
 
     val uiState: StateFlow<GameUiState> = _uiState
 
-    private val _driftTimer = MutableStateFlow(3)
-    val driftTimer: StateFlow<Int> = _driftTimer
+    private val driftDelaySeconds: Int? = when (gameMode) {
+        GameMode.CLASSIC -> null
+        GameMode.DRIFT_2S -> 2
+        GameMode.DRIFT_1S -> 1
+    }
 
-    private val driftDelaySeconds = 3
+    private val _driftTimer = MutableStateFlow(driftDelaySeconds ?: 0)
+    val driftTimer: StateFlow<Int> = _driftTimer
 
     private var driftJob: Job? = null
 
@@ -57,7 +68,8 @@ class GameViewModel @Inject constructor(
             _uiState.value = GameUiState.Playing(
                 board = state.board,
                 score = state.score,
-                bestScore = state.bestScore
+                bestScore = state.bestScore,
+                gameMode = gameMode
             )
             startDriftTimer()
         }
@@ -86,7 +98,8 @@ class GameViewModel @Inject constructor(
                 saveBestScoreIfNeeded(currentState.score)
                 _uiState.value = GameUiState.GameOver(
                     score = currentState.score,
-                    bestScore = maxOf(currentState.bestScore, currentState.score)
+                    bestScore = maxOf(currentState.bestScore, currentState.score),
+                    gameMode = gameMode
                 )
             }
             return
@@ -103,13 +116,15 @@ class GameViewModel @Inject constructor(
             saveBestScoreIfNeeded(newScore)
             _uiState.value = GameUiState.GameOver(
                 score = newScore,
-                bestScore = maxOf(currentState.bestScore, newScore)
+                bestScore = maxOf(currentState.bestScore, newScore),
+                gameMode = gameMode
             )
         } else {
             _uiState.value = GameUiState.Playing(
                 board = boardAfterSpawn,
                 score = newScore,
-                bestScore = currentState.bestScore
+                bestScore = currentState.bestScore,
+                gameMode = gameMode
             )
         }
 
@@ -118,13 +133,15 @@ class GameViewModel @Inject constructor(
 
     private fun startDriftTimer() {
 
+        val delaySeconds = driftDelaySeconds ?: return
+
         driftJob?.cancel()
 
         driftJob = viewModelScope.launch {
 
             while (true) {
 
-                for (i in driftDelaySeconds downTo 1) {
+                for (i in delaySeconds downTo 1) {
                     _driftTimer.value = i
                     delay(1000)
                 }
@@ -152,7 +169,8 @@ class GameViewModel @Inject constructor(
             saveBestScoreIfNeeded(currentState.score)
             _uiState.value = GameUiState.GameOver(
                 score = currentState.score,
-                bestScore = currentState.bestScore
+                bestScore = currentState.bestScore,
+                gameMode = gameMode
             )
         } else {
             _uiState.value = currentState.copy(

@@ -10,6 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.flash.numberdrift.R
 import com.flash.numberdrift.databinding.FragmentHomeBinding
+import com.flash.numberdrift.presentation.shared.GameMode
 import dagger.hilt.android.AndroidEntryPoint
 import dev.androidbroadcast.vbpd.viewBinding
 import kotlinx.coroutines.launch
@@ -21,8 +22,22 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(binding) {
-            playButton.setOnClickListener {
-                findNavController().navigate(HomeFragmentDirections.actionHomeToGame())
+            classicModeButton.setOnClickListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeToGame(GameMode.CLASSIC)
+                )
+            }
+
+            drift2ModeButton.setOnClickListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeToGame(GameMode.DRIFT_2S)
+                )
+            }
+
+            drift1ModeButton.setOnClickListener {
+                findNavController().navigate(
+                    HomeFragmentDirections.actionHomeToGame(GameMode.DRIFT_1S)
+                )
             }
 
             settingsButton.setOnClickListener {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     app:startDestination="@id/homeFragment">
 
     <!-- HOME -->
@@ -24,6 +23,10 @@
         android:id="@+id/gameFragment"
         android:name="com.flash.numberdrift.presentation.game.GameFragment">
 
+        <argument
+            android:name="gameMode"
+            app:argType="com.flash.numberdrift.presentation.shared.GameMode" />
+
         <action
             android:id="@+id/action_game_to_gameOver"
             app:destination="@id/gameOverFragment" />
@@ -43,7 +46,7 @@
             android:id="@+id/action_settings_to_home"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true"  />
+            app:popUpToInclusive="true" />
 
     </fragment>
 
@@ -51,22 +54,25 @@
     <fragment
         android:id="@+id/gameOverFragment"
         android:name="com.flash.numberdrift.presentation.gameover.GameOverFragment">
+        <argument
+            android:name="gameMode"
+            app:argType="com.flash.numberdrift.presentation.shared.GameMode" />
 
         <argument
             android:name="score"
-            app:argType="integer"
-            android:defaultValue="0"/>
+            android:defaultValue="0"
+            app:argType="integer" />
 
         <argument
             android:name="bestScore"
-            app:argType="integer"
-            android:defaultValue="0"/>
+            android:defaultValue="0"
+            app:argType="integer" />
 
         <action
             android:id="@+id/action_gameOver_to_home"
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="false"/>
+            app:popUpToInclusive="false" />
 
         <action
             android:id="@+id/action_gameOver_to_game"

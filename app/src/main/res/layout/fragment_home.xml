@@ -15,65 +15,95 @@
         android:text="Number Drift"
         android:textSize="34sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/highScoreText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- High Score -->
     <TextView
         android:id="@+id/highScoreText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="High Score: 0"
         android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/titleText"
+        app:layout_constraintBottom_toTopOf="@id/modeContainer"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/titleText" />
 
-    <!-- Play Button -->
-    <Button
-        android:id="@+id/playButton"
+    <!-- Game Modes -->
+    <LinearLayout
+        android:id="@+id/modeContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Play"
-        android:layout_marginTop="40dp"
-        app:layout_constraintTop_toBottomOf="@id/highScoreText"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@id/dailyChallengeText"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/highScoreText">
+
+        <Button
+            android:id="@+id/classicModeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Classic Mode" />
+
+        <Button
+            android:id="@+id/drift2ModeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Drift Mode (2s)" />
+
+        <Button
+            android:id="@+id/drift1ModeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Drift Mode (1s)" />
+
+    </LinearLayout>
 
     <!-- Daily Challenge Placeholder -->
     <TextView
         android:id="@+id/dailyChallengeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Daily Challenge"
-        android:textStyle="bold"
-        android:textSize="18sp"
         android:layout_marginTop="48dp"
-        app:layout_constraintTop_toBottomOf="@id/playButton"
+        android:text="Daily Challenge"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/dailyChallengeGoal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/modeContainer" />
 
     <TextView
         android:id="@+id/dailyChallengeGoal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Reach score 256"
         android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/dailyChallengeText"
+        android:text="Reach score 256"
+        app:layout_constraintBottom_toTopOf="@id/settingsButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/dailyChallengeText" />
 
     <!-- Settings -->
     <Button
         android:id="@+id/settingsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Settings"
         android:layout_marginTop="48dp"
-        app:layout_constraintTop_toBottomOf="@id/dailyChallengeGoal"
+        android:text="Settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/dailyChallengeGoal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

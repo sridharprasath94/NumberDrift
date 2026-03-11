@@ -27,6 +27,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.graphics.toColorInt
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
+import android.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 @AndroidEntryPoint
 class GameFragment : Fragment(R.layout.fragment_game) {
@@ -161,12 +163,19 @@ class GameFragment : Fragment(R.layout.fragment_game) {
             }
         }
 
-        // Override system back press to go to Home instead of Game
+        // Override system back press
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigate(R.id.action_game_to_home)
+
+                    val state = viewModel.uiState.value
+
+                    if (state is GameUiState.Playing) {
+                        showExitGameDialog()
+                    } else {
+                        findNavController().navigate(GameFragmentDirections.actionGameToHome())
+                    }
                 }
             }
         )
@@ -195,7 +204,8 @@ class GameFragment : Fragment(R.layout.fragment_game) {
                         is GameUiState.GameOver -> {
                             val dir = GameFragmentDirections.actionGameToGameOver(
                                 score = state.score,
-                                bestScore = state.bestScore
+                                bestScore = state.bestScore,
+                                gameMode = state.gameMode
                             )
 
                             findNavController().navigate(dir)
@@ -249,6 +259,17 @@ class GameFragment : Fragment(R.layout.fragment_game) {
             }
 
         }
+    }
+
+    private fun showExitGameDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Exit Game")
+            .setMessage("Are you sure you want to leave the current game?")
+            .setPositiveButton("Yes") { _, _ ->
+                findNavController().navigate(R.id.action_game_to_home)
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     private fun renderBoard(board: Board) {

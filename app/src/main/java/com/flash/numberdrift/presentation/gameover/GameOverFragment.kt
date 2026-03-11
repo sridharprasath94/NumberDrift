@@ -22,13 +22,14 @@ class GameOverFragment : Fragment(R.layout.fragment_gameover) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         with(binding) {
-            GameOverFragmentArgs.fromBundle(requireArguments()).score.let { score ->
+            val args = GameOverFragmentArgs.fromBundle(requireArguments())
+            args.score.let { score ->
                 scoreText.text = getString(R.string.score_format, score)
             }
 
             playAgainButton.setOnClickListener {
                 findNavController().navigate(
-                    GameOverFragmentDirections.actionGameOverToGame(),
+                    GameOverFragmentDirections.actionGameOverToGame(args.gameMode),
                 )
             }
 
