@@ -1,7 +1,6 @@
 package com.flash.numberdrift.presentation.game
 
 import android.os.Build
-import kotlin.math.max
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,12 +10,12 @@ import com.flash.numberdrift.domain.usecase.game.DetectGameOverUseCase
 import com.flash.numberdrift.domain.usecase.game.DriftBoardUseCase
 import com.flash.numberdrift.domain.usecase.game.HasBoardChangedUseCase
 import com.flash.numberdrift.domain.usecase.game.MoveBoardUseCase
-import com.flash.numberdrift.domain.usecase.score.SaveBestScoreUseCase
 import com.flash.numberdrift.domain.usecase.game.SpawnTilesUseCase
 import com.flash.numberdrift.domain.usecase.game.StartGameUseCase
 import com.flash.numberdrift.domain.usecase.savedgame.ClearSavedGameUseCase
 import com.flash.numberdrift.domain.usecase.savedgame.GetSavedGameUseCase
 import com.flash.numberdrift.domain.usecase.savedgame.SaveGameUseCase
+import com.flash.numberdrift.domain.usecase.score.SaveBestScoreUseCase
 import com.flash.numberdrift.framework.effects.SoundManager
 import com.flash.numberdrift.framework.effects.VibrationManager
 import com.flash.numberdrift.presentation.shared.GameMode
