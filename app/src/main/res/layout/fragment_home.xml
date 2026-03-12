@@ -7,19 +7,6 @@
     android:padding="32dp"
     tools:context=".presentation.home.HomeFragment">
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:letterSpacing="0.05"
-        android:text="@string/number_drift"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Game Modes -->
     <LinearLayout
@@ -29,10 +16,24 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleText">
-
+        app:layout_constraintTop_toTopOf="parent">
+        <!-- Title -->
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.05"
+            android:text="@string/number_drift"
+            android:layout_marginBottom="40dp"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
         <!-- Classic Mode -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/classicModeButton"
@@ -274,49 +275,43 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/dailyChallengeContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/modeContainer">
-
-        <TextView
-            android:id="@+id/dailyChallengeText"
+        <LinearLayout
+            android:id="@+id/dailyChallengeContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/daily_challenge"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="48dp"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/dailyChallengeGoal"
+            <TextView
+                android:id="@+id/dailyChallengeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/daily_challenge"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/dailyChallengeGoal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Reach score 256"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
+
+        <!-- Settings -->
+        <Button
+            android:id="@+id/settingsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Reach score 256"
-            tools:ignore="HardcodedText" />
-
+            android:layout_marginTop="24dp"
+            android:background="@drawable/button_wood"
+            android:text="@string/settings"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <!-- Settings -->
-    <Button
-        android:id="@+id/settingsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/button_wood"
-        android:text="@string/settings"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dailyChallengeContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
