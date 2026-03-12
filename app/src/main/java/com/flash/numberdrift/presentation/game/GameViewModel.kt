@@ -5,12 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flash.numberdrift.domain.model.Direction
+import com.flash.numberdrift.domain.model.MoveResult
 import com.flash.numberdrift.domain.model.SavedGame
 import com.flash.numberdrift.domain.usecase.game.DetectGameOverUseCase
 import com.flash.numberdrift.domain.usecase.game.DriftBoardUseCase
-import com.flash.numberdrift.domain.usecase.game.HasBoardChangedUseCase
-import com.flash.numberdrift.domain.usecase.game.MoveBoardUseCase
-import com.flash.numberdrift.domain.usecase.game.SpawnTilesUseCase
+import com.flash.numberdrift.domain.usecase.game.ProcessMoveUseCase
 import com.flash.numberdrift.domain.usecase.game.StartGameUseCase
 import com.flash.numberdrift.domain.usecase.savedgame.ClearSavedGameUseCase
 import com.flash.numberdrift.domain.usecase.savedgame.GetSavedGameUseCase
@@ -32,9 +31,7 @@ class GameViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val detectGameOverUseCase: DetectGameOverUseCase,
     private val driftBoardUseCase: DriftBoardUseCase,
-    private val moveBoardUseCase: MoveBoardUseCase,
-    private val spawnTilesUseCase: SpawnTilesUseCase,
-    private val hasBoardChangedUseCase: HasBoardChangedUseCase,
+    private val processMoveUseCase: ProcessMoveUseCase,
     private val startGameUseCase: StartGameUseCase,
     private val saveBestScoreUseCase: SaveBestScoreUseCase,
     private val vibrationManager: VibrationManager,
@@ -104,55 +101,50 @@ class GameViewModel @Inject constructor(
 
     fun moveBoard(direction: Direction) {
 
-        val currentState = _uiState.value
+        val state = _uiState.value
+        if (state !is GameUiState.Playing) return
+
         soundManager.playMoveSound()
-        if (currentState !is GameUiState.Playing) return
 
-        val (movedBoard, gainedScore) = moveBoardUseCase(
-            currentState.board,
-            direction
-        )
-        if (gainedScore > 0) {
-            soundManager.playMergeSound()
-        }
-
-        // If nothing changed, do nothing
-        val boardChanged = hasBoardChangedUseCase(
-            currentState.board,
-            movedBoard
+        val result = processMoveUseCase(
+            board = state.board,
+            direction = direction,
+            score = state.score,
+            bestScore = state.bestScore
         )
 
-        if (!boardChanged) {
-            val isGameOver = detectGameOverUseCase(currentState.board)
-            if (isGameOver) {
-                handleGameOver(
-                    score = currentState.score,
-                    bestScore = maxOf(currentState.bestScore, currentState.score)
+        when (result) {
+
+            MoveResult.NoChange -> {
+                val isGameOver = detectGameOverUseCase(state.board)
+                if (isGameOver) {
+                    handleGameOver(
+                        score = state.score,
+                        bestScore = maxOf(state.bestScore, state.score)
+                    )
+                }
+                return
+            }
+
+            is MoveResult.Playing -> {
+
+                if (result.score > state.score) {
+                    soundManager.playMergeSound()
+                }
+
+                _uiState.value = state.copy(
+                    board = result.board,
+                    score = result.score,
+                    bestScore = result.bestScore
                 )
             }
-            return
-        }
 
-        // Spawn new tile
-        val boardAfterSpawn = spawnTilesUseCase(movedBoard)
-
-        val newScore = currentState.score + gainedScore
-
-        val isGameOver = detectGameOverUseCase(boardAfterSpawn)
-
-        if (isGameOver) {
-            handleGameOver(
-                score = newScore,
-                bestScore = maxOf(currentState.bestScore, newScore)
-            )
-        } else {
-            val newBestScore = maxOf(currentState.bestScore, newScore)
-            _uiState.value = GameUiState.Playing(
-                board = boardAfterSpawn,
-                score = newScore,
-                bestScore = newBestScore,
-                gameMode = gameMode
-            )
+            is MoveResult.GameOver -> {
+                handleGameOver(
+                    score = result.score,
+                    bestScore = result.bestScore
+                )
+            }
         }
 
         resetDriftTimer()
