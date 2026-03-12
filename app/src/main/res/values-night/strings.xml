@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NumberDrift</string>
     <string name="current_score_format">Current Score: %1$d</string>

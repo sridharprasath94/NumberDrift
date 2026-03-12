@@ -9,6 +9,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.flash.numberdrift.R
 import com.flash.numberdrift.databinding.FragmentGameoverBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,38 +20,50 @@ import kotlinx.coroutines.launch
 class GameOverFragment : Fragment(R.layout.fragment_gameover) {
     private val binding: FragmentGameoverBinding by viewBinding(FragmentGameoverBinding::bind)
     private val viewModel: GameOverViewModel by viewModels()
+    private val args: GameOverFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        with(binding) {
-            val args = GameOverFragmentArgs.fromBundle(requireArguments())
-            args.score.let { score ->
-                scoreText.text = getString(R.string.current_score_format, score)
-            }
-
-            playAgainButton.setOnClickListener {
-                findNavController().navigate(
-                    GameOverFragmentDirections.actionGameOverToGame(args.gameMode),
-                )
-            }
-
-            homeButton.setOnClickListener {
-                findNavController().navigate(GameOverFragmentDirections.actionGameOverToHome())
-            }
-
-            // Override system back press to go to Home instead of Game
-            requireActivity().onBackPressedDispatcher.addCallback(
-                viewLifecycleOwner,
-                object : OnBackPressedCallback(true) {
-                    override fun handleOnBackPressed() {
-                        findNavController().navigate(GameOverFragmentDirections.actionGameOverToHome())
-                    }
-                }
-            )
-        }
+        setupScore()
+        setupButtons()
+        setupBackHandler()
 
         observeViewModel()
     }
 
+    private fun setupScore() {
+        val score = args.score
+        binding.scoreText.text = getString(R.string.current_score_format, score)
+    }
+
+    private fun setupButtons() {
+
+        binding.playAgainButton.setOnClickListener {
+            findNavController().navigate(
+                GameOverFragmentDirections.actionGameOverToGame(args.gameMode)
+            )
+        }
+
+        binding.homeButton.setOnClickListener {
+            navigateHome()
+        }
+    }
+
+    private fun setupBackHandler() {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    navigateHome()
+                }
+            }
+        )
+    }
+
+    private fun navigateHome() {
+        findNavController().navigate(
+            GameOverFragmentDirections.actionGameOverToHome()
+        )
+    }
 
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {

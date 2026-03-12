@@ -2,14 +2,11 @@ package com.flash.numberdrift.domain.usecase.game
 
 import com.flash.numberdrift.domain.model.Board
 import javax.inject.Inject
-import kotlin.random.Random
 
 class SpawnTilesUseCase @Inject constructor() {
 
     /**
-     * Spawns a new tile (2 or 4) in a random empty cell.
-     * 90% chance -> 2
-     * 10% chance -> 4
+     * Spawns a new tile (2) in a random empty cell.
      */
     operator fun invoke(board: Board): Board {
 
@@ -32,9 +29,8 @@ class SpawnTilesUseCase @Inject constructor() {
 
         val (row, col) = emptyCells.random()
 
-        val value = if (Random.nextFloat() < 0.9f) 2 else 4
-
-        mutable[row][col] = value
+        mutable.sumOf { rowCells -> rowCells.count { it != 0 } }
+        mutable[row][col] = 2
 
         return Board(
             cells = mutable.map { it.toList() }

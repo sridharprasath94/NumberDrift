@@ -3,6 +3,7 @@ package com.flash.numberdrift.presentation.home
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -41,8 +42,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun renderModeState(
-        bestScoreView: android.widget.TextView,
-        savedScoreView: android.widget.TextView,
+        bestScoreView: TextView,
+        savedScoreView: TextView,
         continueButton: Button,
         bestScore: Int,
         savedScore: Int?
@@ -78,39 +79,39 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         viewModel.refreshBestScores()
     }
 
+    private fun renderContent(state: HomeUiState.Content) {
+
+        renderModeState(
+            bestScoreView = binding.classicBestScore,
+            savedScoreView = binding.classicSavedScore,
+            continueButton = binding.classicContinueButton,
+            bestScore = state.bestScoreClassicMode,
+            savedScore = state.savedClassicScore
+        )
+
+        renderModeState(
+            bestScoreView = binding.drift2BestScore,
+            savedScoreView = binding.drift2SavedScore,
+            continueButton = binding.drift2ContinueButton,
+            bestScore = state.bestScoreDrift2Mode,
+            savedScore = state.savedDrift2Score
+        )
+
+        renderModeState(
+            bestScoreView = binding.drift1BestScore,
+            savedScoreView = binding.drift1SavedScore,
+            continueButton = binding.drift1ContinueButton,
+            bestScore = state.bestScoreDrift1Mode,
+            savedScore = state.savedDrift1Score
+        )
+    }
+
     private fun observeViewModel() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    when (state) {
-                        is HomeUiState.Content -> {
-
-                            renderModeState(
-                                bestScoreView = binding.classicBestScore,
-                                savedScoreView = binding.classicSavedScore,
-                                continueButton = binding.classicContinueButton,
-                                bestScore = state.bestScoreClassicMode,
-                                savedScore = state.savedClassicScore
-                            )
-
-                            renderModeState(
-                                bestScoreView = binding.drift2BestScore,
-                                savedScoreView = binding.drift2SavedScore,
-                                continueButton = binding.drift2ContinueButton,
-                                bestScore = state.bestScoreDrift2Mode,
-                                savedScore = state.savedDrift2Score
-                            )
-
-                            renderModeState(
-                                bestScoreView = binding.drift1BestScore,
-                                savedScoreView = binding.drift1SavedScore,
-                                continueButton = binding.drift1ContinueButton,
-                                bestScore = state.bestScoreDrift1Mode,
-                                savedScore = state.savedDrift1Score
-                            )
-                        }
-
-                        else -> Unit
+                    if (state is HomeUiState.Content) {
+                        renderContent(state)
                     }
                 }
             }

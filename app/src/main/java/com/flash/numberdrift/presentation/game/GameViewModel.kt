@@ -1,6 +1,7 @@
 package com.flash.numberdrift.presentation.game
 
 import android.os.Build
+import kotlin.math.max
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -146,10 +147,11 @@ class GameViewModel @Inject constructor(
                 bestScore = maxOf(currentState.bestScore, newScore)
             )
         } else {
+            val newBestScore = maxOf(currentState.bestScore, newScore)
             _uiState.value = GameUiState.Playing(
                 board = boardAfterSpawn,
                 score = newScore,
-                bestScore = currentState.bestScore,
+                bestScore = newBestScore,
                 gameMode = gameMode
             )
         }

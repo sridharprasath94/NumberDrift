@@ -29,7 +29,9 @@
 
         <action
             android:id="@+id/action_game_to_gameOver"
-            app:destination="@id/gameOverFragment" />
+            app:destination="@id/gameOverFragment"
+            app:popUpTo="@id/gameFragment"
+            app:popUpToInclusive="true" />
 
         <action
             android:id="@+id/action_game_to_home"
