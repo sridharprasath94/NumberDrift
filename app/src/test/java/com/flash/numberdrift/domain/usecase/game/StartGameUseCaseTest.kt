@@ -1,5 +1,6 @@
 package com.flash.numberdrift.domain.usecase.game
 
+import com.flash.numberdrift.data.repository.FakePreferenceRepositoryImpl
 import com.flash.numberdrift.domain.model.SavedGame
 
 import com.flash.numberdrift.domain.repository.PreferenceRepository
@@ -13,43 +14,17 @@ import org.junit.Test
 class StartGameUseCaseTest {
 
     private lateinit var useCase: StartGameUseCase
+    private lateinit var fakeRepository: PreferenceRepository
 
-    // Fake repository for testing
-    private val fakeRepository = object : PreferenceRepository {
-        override suspend fun getBestScore(mode: GameMode): Int = 50
-        override suspend fun saveBestScore(score: Int, mode: GameMode) {}
-
-        override suspend fun isSoundEffectsEnabled(): Boolean = true
-        override suspend fun setSoundEffectsEnabled(enabled: Boolean) {}
-
-        override suspend fun isMusicEnabled(): Boolean = true
-        override suspend fun setMusicEnabled(enabled: Boolean) {}
-
-        override suspend fun isVibrationEnabled(): Boolean = true
-        override suspend fun setVibrationEnabled(enabled: Boolean) {}
-
-        override suspend fun isDarkModeEnabled(): Boolean = false
-        override suspend fun setDarkModeEnabled(enabled: Boolean) {}
-
-        override suspend fun saveGame(game: SavedGame) {}
-
-        override suspend fun getSavedGame(mode: GameMode): SavedGame? = null
-
-        override suspend fun clearSavedGame(mode: GameMode) {}
-
-        override suspend fun hasSavedGame(mode: GameMode): Boolean = false
-
-        override suspend fun isAdsRemoved(): Boolean = false
-
-        override suspend fun setAdsRemoved(removed: Boolean) {}
-    }
 
     @Before
     fun setup() {
+        fakeRepository = FakePreferenceRepositoryImpl()
         useCase = StartGameUseCase(
             SpawnTilesUseCase(),
             fakeRepository
         )
+
     }
 
     @Test
@@ -60,6 +35,7 @@ class StartGameUseCaseTest {
 
     @Test
     fun `best score is loaded from repository`() = runBlocking {
+        fakeRepository.saveBestScore(50, GameMode.CLASSIC)
         val state = useCase(GameMode.CLASSIC)
         assertEquals(50, state.bestScore)
     }
