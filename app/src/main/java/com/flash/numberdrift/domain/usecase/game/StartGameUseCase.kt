@@ -5,9 +5,9 @@ import com.flash.numberdrift.domain.model.GameState
 import com.flash.numberdrift.domain.repository.PreferenceRepository
 import com.flash.numberdrift.presentation.shared.GameMode
 import javax.inject.Inject
-import kotlin.random.Random
 
 class StartGameUseCase @Inject constructor(
+    private val spawnTilesUseCase: SpawnTilesUseCase,
     private val preferenceRepository: PreferenceRepository
 ) {
 
@@ -15,39 +15,22 @@ class StartGameUseCase @Inject constructor(
 
         val size = 5
 
-        val board = MutableList(size) {
-            MutableList(size) { 0 }
-        }
+        var board = Board(
+            cells = MutableList(size) {
+                MutableList(size) { 0 }
+            }.map { it.toList() }
+        )
 
         repeat(2) {
-            spawnTile(board)
+            board = spawnTilesUseCase(board)
         }
 
         val bestScore = preferenceRepository.getBestScore(mode)
 
         return GameState(
-            board = Board(cells = board.map { it.toList() }),
+            board = board,
             score = 0,
             bestScore = bestScore
         )
-    }
-
-    private fun spawnTile(board: MutableList<MutableList<Int>>) {
-
-        val emptyCells = mutableListOf<Pair<Int, Int>>()
-
-        for (row in board.indices) {
-            for (col in board[row].indices) {
-                if (board[row][col] == 0) {
-                    emptyCells.add(row to col)
-                }
-            }
-        }
-
-        if (emptyCells.isEmpty()) return
-
-        val (row, col) = emptyCells.random()
-
-        board[row][col] = if (Random.nextFloat() < 0.9f) 2 else 4
     }
 }

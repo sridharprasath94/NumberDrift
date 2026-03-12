@@ -28,10 +28,7 @@ class SpawnTilesUseCase @Inject constructor() {
         }
 
         val (row, col) = emptyCells.random()
-
-        mutable.sumOf { rowCells -> rowCells.count { it != 0 } }
         mutable[row][col] = 2
-
         return Board(
             cells = mutable.map { it.toList() }
         )
