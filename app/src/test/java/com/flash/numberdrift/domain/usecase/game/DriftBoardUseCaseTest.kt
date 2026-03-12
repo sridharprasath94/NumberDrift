@@ -1,7 +1,6 @@
-package com.flash.numberdrift.domain.usecase
+package com.flash.numberdrift.domain.usecase.game
 
 import com.flash.numberdrift.domain.model.Board
-import com.flash.numberdrift.domain.usecase.game.DriftBoardUseCase
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

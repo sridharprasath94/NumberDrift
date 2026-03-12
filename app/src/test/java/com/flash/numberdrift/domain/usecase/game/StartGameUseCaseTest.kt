@@ -1,10 +1,8 @@
-package com.flash.numberdrift.domain.usecase
+package com.flash.numberdrift.domain.usecase.game
 
 import com.flash.numberdrift.domain.model.SavedGame
-import com.flash.numberdrift.domain.usecase.game.SpawnTilesUseCase
 
 import com.flash.numberdrift.domain.repository.PreferenceRepository
-import com.flash.numberdrift.domain.usecase.game.StartGameUseCase
 import com.flash.numberdrift.presentation.shared.GameMode
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
