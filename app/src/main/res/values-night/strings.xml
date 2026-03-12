@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NumberDrift</string>
     <string name="current_score_format">Current Score: %1$d</string>
@@ -10,8 +11,6 @@
     <string name="continue_game">Continue</string>
     <string name="classic_mode">Classic Mode</string>
     <string name="number_drift">Number Drift</string>
-    <string name="drift_mode_2s">Drift Mode (2s)</string>
-    <string name="new_game">New Game</string>
     <string name="drift_mode_1s">Drift Mode (1s)</string>
     <string name="daily_challenge">Daily Challenge</string>
     <string name="settings">Settings</string>

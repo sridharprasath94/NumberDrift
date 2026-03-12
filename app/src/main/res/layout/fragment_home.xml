@@ -12,12 +12,11 @@
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Number Drift"
-        android:textSize="34sp"
-        android:textStyle="bold"
         android:fontFamily="sans-serif-medium"
         android:letterSpacing="0.05"
-        app:layout_constraintBottom_toTopOf="@id/modeContainer"
+        android:text="@string/number_drift"
+        android:textSize="34sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,7 +29,6 @@
         android:layout_marginTop="20dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/dailyChallengeContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleText">
@@ -41,71 +39,73 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="12dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground">
+            android:foreground="?attr/selectableItemBackground"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
                 android:background="@drawable/button_wood"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:padding="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Classic Mode"
-                    android:textStyle="bold"
+                    android:text="@string/classic_mode"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
-                    android:textColor="@android:color/white"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/classicBestScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Best: 0"
-                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"
                     android:textColor="@android:color/white"
-                    android:layout_marginTop="4dp"/>
+                    android:textSize="14sp"
+                    tools:text="High Score: 10400" />
 
                 <TextView
                     android:id="@+id/classicSavedScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Score: 0"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/white"
                     android:layout_marginTop="4dp"
-                    android:visibility="gone"/>
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    tools:text="Current Score: 50" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="8dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/classicContinueButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Continue"
-                        android:visibility="gone"
                         android:background="@drawable/button_wood"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white"
+                        android:visibility="gone"
+                        tools:ignore="ButtonStyle"
+                        tools:text="Continue" />
 
                     <Button
                         android:id="@+id/classicNewGameButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New Game"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/button_wood"
-                        android:textColor="@android:color/white"/>
+                        android:text="@string/new_game"
+                        android:textColor="@android:color/white"
+                        tools:ignore="ButtonStyle" />
 
                 </LinearLayout>
 
@@ -119,71 +119,74 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="12dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="?attr/colorPrimary"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground">
+            android:foreground="?attr/selectableItemBackground"
+            app:cardBackgroundColor="?attr/colorPrimary"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
                 android:background="@drawable/button_wood"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:padding="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Drift Mode (2s)"
-                    android:textStyle="bold"
+                    android:text="@string/drift_mode_2s"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
-                    android:textColor="@android:color/white"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/drift2BestScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Best: 0"
-                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"
                     android:textColor="@android:color/white"
-                    android:layout_marginTop="4dp"/>
+                    android:textSize="14sp"
+                    tools:text="High Score: 1040" />
 
                 <TextView
                     android:id="@+id/drift2SavedScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Score: 0"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/white"
                     android:layout_marginTop="4dp"
-                    android:visibility="gone"/>
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    tools:text="Current Score: 40" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="8dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/drift2ContinueButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Continue"
-                        android:visibility="gone"
                         android:background="@drawable/button_wood"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white"
+                        android:visibility="gone"
+                        tools:ignore="ButtonStyle"
+                        tools:text="Continue" />
 
                     <Button
                         android:id="@+id/drift2NewGameButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New Game"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/button_wood"
-                        android:textColor="@android:color/white"/>
+                        android:text="@string/new_game"
+                        android:textColor="@android:color/white"
+                        tools:ignore="ButtonStyle" />
 
                 </LinearLayout>
 
@@ -197,71 +200,74 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="12dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="?attr/colorPrimary"
             android:clickable="true"
             android:focusable="true"
-            android:foreground="?attr/selectableItemBackground">
+            android:foreground="?attr/selectableItemBackground"
+            app:cardBackgroundColor="?attr/colorPrimary"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
                 android:background="@drawable/button_wood"
+                android:gravity="center"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:padding="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Drift Mode (1s)"
-                    android:textStyle="bold"
+                    android:text="@string/drift_mode_1s"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
-                    android:textColor="@android:color/white"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/drift1BestScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Best: 0"
-                    android:textSize="14sp"
+                    android:layout_marginTop="4dp"
                     android:textColor="@android:color/white"
-                    android:layout_marginTop="4dp"/>
+                    android:textSize="14sp"
+                    tools:text="High Score: 40" />
 
                 <TextView
                     android:id="@+id/drift1SavedScore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Score: 0"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/white"
                     android:layout_marginTop="4dp"
-                    android:visibility="gone"/>
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    tools:text="Current Score: 140" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="8dp"
-                    android:gravity="center">
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/drift1ContinueButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Continue"
-                        android:visibility="gone"
                         android:background="@drawable/button_wood"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white"
+                        android:visibility="gone"
+                        tools:ignore="ButtonStyle"
+                        tools:text="Continue" />
 
                     <Button
                         android:id="@+id/drift1NewGameButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="New Game"
                         android:layout_marginStart="8dp"
                         android:background="@drawable/button_wood"
-                        android:textColor="@android:color/white"/>
+                        android:text="@string/new_game"
+                        android:textColor="@android:color/white"
+                        tools:ignore="ButtonStyle" />
 
                 </LinearLayout>
 
@@ -274,19 +280,18 @@
         android:id="@+id/dailyChallengeContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
         android:layout_marginTop="48dp"
-        app:layout_constraintTop_toBottomOf="@id/modeContainer"
-        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/settingsButton">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/modeContainer">
 
         <TextView
             android:id="@+id/dailyChallengeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Daily Challenge"
+            android:text="@string/daily_challenge"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -295,7 +300,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Reach score 256" />
+            android:text="Reach score 256"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 
@@ -304,13 +310,13 @@
         android:id="@+id/settingsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:text="Settings"
+        android:layout_marginTop="24dp"
         android:background="@drawable/button_wood"
+        android:text="@string/settings"
         android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dailyChallengeContainer"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/dailyChallengeContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
