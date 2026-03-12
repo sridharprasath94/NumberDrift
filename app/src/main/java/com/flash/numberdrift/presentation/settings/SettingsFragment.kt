@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.flash.numberdrift.R
 import com.flash.numberdrift.databinding.FragmentSettingsBinding
+import com.flash.numberdrift.presentation.shared.GameSettings
 import dagger.hilt.android.AndroidEntryPoint
 import dev.androidbroadcast.vbpd.viewBinding
 import kotlinx.coroutines.launch
@@ -19,46 +20,54 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val viewModel: SettingsViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        with(binding) {
+        observeSettings()
+        setupListeners()
+    }
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.settings.collect { settings ->
-                        settings?.let {
-                            soundSwitch.isChecked = it.soundEffects
-                            musicSwitch.isChecked = it.music
-                            vibrationSwitch.isChecked = it.vibration
-                            darkModeSwitch.isChecked = it.darkMode
-                            /// TODO: Implement in-app purchase and update button text based on purchase status
-//                            if (it.adsRemoved) {
-//                                removeAdsButton.text = "Ads Removed ✓"
-//                            } else {
-//                                removeAdsButton.text = "Remove Ads (€1.99)"
-//                            }
-                        }
-                    }
+    private fun observeSettings() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.settings.collect { settings ->
+                    settings?.let { renderSettings(it) }
                 }
             }
+        }
+    }
 
-            soundSwitch.setOnCheckedChangeListener { _, checked ->
-                viewModel.updateSoundEffects(checked)
-            }
+    private fun renderSettings(settings: GameSettings) {
+        binding.soundSwitch.isChecked = settings.soundEffects
+        binding.musicSwitch.isChecked = settings.music
+        binding.vibrationSwitch.isChecked = settings.vibration
+        binding.darkModeSwitch.isChecked = settings.darkMode
 
-            musicSwitch.setOnCheckedChangeListener { _, checked ->
-                viewModel.updateMusic(checked)
-            }
+        // TODO: Implement in-app purchase and update button text based on purchase status
+//        if (settings.adsRemoved) {
+//            binding.removeAdsButton.text = "Ads Removed ✓"
+//        } else {
+//            binding.removeAdsButton.text = "Remove Ads (€1.99)"
+//        }
+    }
 
-            vibrationSwitch.setOnCheckedChangeListener { _, checked ->
-                viewModel.updateVibration(checked)
-            }
+    private fun setupListeners() {
 
-            darkModeSwitch.setOnCheckedChangeListener { _, checked ->
-                viewModel.updateDarkMode(checked)
-            }
+        binding.soundSwitch.setOnCheckedChangeListener { _, checked ->
+            viewModel.updateSoundEffects(checked)
+        }
 
-            removeAdsButton.setOnClickListener {
-                viewModel.updateAdsStatus()
-            }
+        binding.musicSwitch.setOnCheckedChangeListener { _, checked ->
+            viewModel.updateMusic(checked)
+        }
+
+        binding.vibrationSwitch.setOnCheckedChangeListener { _, checked ->
+            viewModel.updateVibration(checked)
+        }
+
+        binding.darkModeSwitch.setOnCheckedChangeListener { _, checked ->
+            viewModel.updateDarkMode(checked)
+        }
+
+        binding.removeAdsButton.setOnClickListener {
+            viewModel.updateAdsStatus()
         }
     }
 }
