@@ -8,7 +8,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class GetBestScoreUseCaseTest {
+class GetSavedGameUseCaseTest {
 
     private lateinit var fakeRepository: PreferenceRepository
     private lateinit var useCase: GetBestScoreUseCase
